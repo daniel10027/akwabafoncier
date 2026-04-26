@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Contact{% endblock %}
+{% block content %}
+<div style="max-width:900px;margin:0 auto;padding:4rem 2rem;">
+  <div style="text-align:center;margin-bottom:3rem;"><h1 style="font-size:2rem;font-weight:800;">Contactez-nous</h1><p style="color:var(--gray-500);margin-top:0.5rem;">Notre équipe répond dans les 24h.</p></div>
+  <div class="grid-2" style="gap:2rem;">
+    <div class="card">
+      <form method="post">
+        {% csrf_token %}
+        <div class="form-group"><label class="form-label">Nom complet</label><input type="text" name="nom" class="form-control" required></div>
+        <div class="form-group"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required></div>
+        <div class="form-group"><label class="form-label">Sujet</label><input type="text" name="sujet" class="form-control" required></div>
+        <div class="form-group"><label class="form-label">Message</label><textarea name="message" class="form-control" rows="6" required></textarea></div>
+        <button type="submit" class="btn btn-primary w-full">Envoyer le message</button>
+      </form>
+    </div>
+    <div>
+      <div class="card" style="margin-bottom:1rem;">
+        <h3 style="font-weight:700;margin-bottom:1rem;">📞 Nos coordonnées</h3>
+        <div style="display:flex;flex-direction:column;gap:0.875rem;font-size:0.875rem;">
+          <div style="display:flex;gap:0.75rem;"><span>📧</span><span>contact@akwabafoncier.ci</span></div>
+          <div style="display:flex;gap:0.75rem;"><span>📞</span><span>+225 27 00 00 00 00</span></div>
+          <div style="display:flex;gap:0.75rem;"><span>📍</span><span>Abidjan, Plateau, Côte d'Ivoire</span></div>
+          <div style="display:flex;gap:0.75rem;"><span>🕐</span><span>Lundi – Vendredi: 8h00 – 17h00</span></div>
+        </div>
+      </div>
+      <div class="card" style="background:var(--orange-pale);border:1px solid var(--orange);">
+        <h3 style="font-weight:700;color:var(--orange);margin-bottom:0.75rem;">🇨🇮 Partenariats institutionnels</h3>
+        <p style="font-size:0.875rem;color:var(--gray-700);">Vous représentez une administration, une banque ou un organisme public ? Contactez-nous pour un partenariat stratégique.</p>
+        <a href="mailto:partenariat@akwabafoncier.ci" class="btn btn-primary btn-sm" style="margin-top:0.75rem;">Nous écrire</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

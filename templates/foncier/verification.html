@@ -1,0 +1,83 @@
+{% extends 'base_dashboard.html' %}
+{% block title %}Vérification terrain{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">🔍 Vérifier un terrain</h1>
+    <p class="page-subtitle">Vérifiez le statut juridique d'un terrain avant toute transaction</p>
+  </div>
+</div>
+<div style="max-width:700px;margin:0 auto;">
+  <div class="card" style="margin-bottom:1.5rem;border-top:3px solid var(--orange);">
+    <h2 style="font-size:1.125rem;font-weight:700;margin-bottom:0.5rem;">Entrez la référence cadastrale</h2>
+    <p style="font-size:0.875rem;color:var(--gray-500);margin-bottom:1.25rem;">La référence cadastrale se trouve sur les documents officiels du terrain (ex: CI-ABJ-COCODY-00847)</p>
+    <form method="post">
+      {% csrf_token %}
+      <div style="display:flex;gap:0.75rem;">
+        <input type="text" name="reference" class="form-control" placeholder="CI-ABJ-COCODY-00847" value="{{ request.POST.reference }}" style="font-size:1rem;flex:1;" required>
+        <button type="submit" class="btn btn-primary btn-lg">Vérifier</button>
+      </div>
+    </form>
+  </div>
+
+  {% if request.method == 'POST' %}
+    {% if terrain %}
+      <div class="card" style="border-top:4px solid {% if terrain.statut == 'litige' %}var(--red){% elif terrain.alerte_active %}var(--yellow){% else %}var(--green){% endif %};">
+        <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.5rem;">
+          <div style="font-size:2rem;">{% if terrain.statut == 'litige' %}⚠️{% elif terrain.alerte_active %}🔔{% else %}✅{% endif %}</div>
+          <div>
+            <h2 style="font-size:1.25rem;font-weight:800;">{{ terrain.reference_cadastrale }}</h2>
+            <div style="margin-top:0.25rem;"><span class="badge badge-{{ terrain.statut }}">{{ terrain.get_statut_display }}</span></div>
+          </div>
+        </div>
+        {% if terrain.alerte_active %}
+        <div class="alert alert-warning" style="margin-bottom:1.25rem;">⚠️ <strong>Attention :</strong> Des alertes sont actives sur ce terrain. Une vérification approfondie est fortement recommandée avant toute transaction.</div>
+        {% endif %}
+        <div class="grid-2" style="gap:1rem;margin-bottom:1.25rem;">
+          <div style="background:var(--gray-50);border-radius:var(--radius-sm);padding:1rem;">
+            <div style="font-size:0.75rem;color:var(--gray-400);font-weight:700;text-transform:uppercase;margin-bottom:0.375rem;">Commune</div>
+            <div style="font-weight:600;">{{ terrain.commune.nom|default:"—" }}</div>
+          </div>
+          <div style="background:var(--gray-50);border-radius:var(--radius-sm);padding:1rem;">
+            <div style="font-size:0.75rem;color:var(--gray-400);font-weight:700;text-transform:uppercase;margin-bottom:0.375rem;">Superficie</div>
+            <div style="font-weight:600;">{{ terrain.superficie|floatformat:0 }} m²</div>
+          </div>
+          <div style="background:var(--gray-50);border-radius:var(--radius-sm);padding:1rem;">
+            <div style="font-size:0.75rem;color:var(--gray-400);font-weight:700;text-transform:uppercase;margin-bottom:0.375rem;">Zone d'usage</div>
+            <div style="font-weight:600;">{{ terrain.get_zone_usage_display }}</div>
+          </div>
+          <div style="background:var(--gray-50);border-radius:var(--radius-sm);padding:1rem;">
+            <div style="font-size:0.75rem;color:var(--gray-400);font-weight:700;text-transform:uppercase;margin-bottom:0.375rem;">Propriétaire officiel</div>
+            <div style="font-weight:600;">{% if terrain.proprietaire_actuel %}{{ terrain.proprietaire_actuel.get_full_name }}{% else %}Non communiqué{% endif %}</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+          <a href="/dashboard/terrains/{{ terrain.pk }}/" class="btn btn-primary">📄 Voir fiche complète</a>
+          <a href="/paiements/payer/?service=rapport_complet&terrain_id={{ terrain.pk }}" class="btn btn-outline">📊 Rapport complet (5 000 FCFA)</a>
+          <a href="/dashboard/reclamations/nouvelle/?terrain={{ terrain.pk }}" class="btn btn-ghost" style="color:var(--red);">🚨 Signaler un problème</a>
+        </div>
+      </div>
+    {% else %}
+      <div class="card" style="border-top:3px solid var(--red);text-align:center;padding:2.5rem;">
+        <div style="font-size:3rem;margin-bottom:1rem;">❌</div>
+        <h3 style="font-weight:700;margin-bottom:0.5rem;">Terrain non trouvé</h3>
+        <p style="color:var(--gray-500);font-size:0.875rem;margin-bottom:1.5rem;">Aucun terrain n'est enregistré avec cette référence cadastrale dans notre base de données.</p>
+        <div class="alert alert-warning" style="text-align:left;">
+          ⚠️ <strong>Attention :</strong> L'absence d'un terrain dans notre base ne garantit pas sa légitimité. Consultez les services officiels du cadastre avant toute transaction.
+        </div>
+        <a href="/contact/" class="btn btn-outline" style="margin-top:1rem;">Contacter notre équipe</a>
+      </div>
+    {% endif %}
+  {% else %}
+    <div class="card" style="background:var(--orange-pale);border:1px dashed var(--orange);">
+      <h3 style="font-weight:700;margin-bottom:0.75rem;">💡 Pourquoi vérifier avant d'acheter ?</h3>
+      <div style="display:flex;flex-direction:column;gap:0.625rem;font-size:0.875rem;">
+        <div style="display:flex;gap:0.5rem;"><span>✅</span><span>Confirmez que le vendeur est bien le propriétaire officiel</span></div>
+        <div style="display:flex;gap:0.5rem;"><span>✅</span><span>Détectez les ventes multiples d'un même terrain</span></div>
+        <div style="display:flex;gap:0.5rem;"><span>✅</span><span>Vérifiez l'absence de litiges ou d'alertes actives</span></div>
+        <div style="display:flex;gap:0.5rem;"><span>✅</span><span>Obtenez un certificat de vérification officiel</span></div>
+      </div>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

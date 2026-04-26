@@ -1,0 +1,32 @@
+{% extends 'base_dashboard.html' %}
+{% block title %}Nouvelle réclamation{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1 class="page-title">🚨 Déposer une réclamation</h1>
+  <a href="/dashboard/reclamations/" class="btn btn-ghost">← Retour</a>
+</div>
+<div style="max-width:640px;">
+  <div class="alert alert-warning">⚠️ Une réclamation signale un problème sérieux sur un terrain (fraude, litige, document falsifié). Elle sera traitée par nos équipes dans les meilleurs délais.</div>
+  <div class="card">
+    <form method="post">
+      {% csrf_token %}
+      <div class="form-group">
+        <label class="form-label">Terrain concerné *</label>
+        <select name="terrain" class="form-control" required>
+          <option value="">Sélectionner...</option>
+          {% for t in terrains %}<option value="{{ t.pk }}" {% if request.GET.terrain == t.pk|stringformat:'s' %}selected{% endif %}>{{ t.reference_cadastrale }} — {{ t.commune.nom }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Objet de la réclamation *</label>
+        <input type="text" name="objet" class="form-control" placeholder="Ex: Vente multiple du terrain, Document falsifié..." required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description détaillée *</label>
+        <textarea name="description" class="form-control" rows="7" placeholder="Décrivez les faits en détail : dates, personnes impliquées, preuves disponibles..." required></textarea>
+      </div>
+      <button type="submit" class="btn btn-danger w-full">🚨 Soumettre la réclamation</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

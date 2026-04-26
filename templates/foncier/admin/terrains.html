@@ -1,0 +1,81 @@
+{% extends 'base_dashboard.html' %}
+{% block title %}Gestion des terrains{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">🏘️ Gestion des terrains</h1>
+    <p class="page-subtitle">{{ terrains|length }} terrain(s) trouvé(s)</p>
+  </div>
+  <div style="display:flex;gap:0.75rem;">
+    <a href="/dashboard/admin-panel/terrains/ajouter/" class="btn btn-primary">➕ Ajouter un terrain</a>
+    <a href="/dashboard/terrains/export/" class="btn btn-secondary">📥 Export CSV</a>
+    <a href="/cartographie/" class="btn btn-outline">🗺️ Voir sur la carte</a>
+  </div>
+</div>
+
+<!-- FILTERS -->
+<form method="get" class="filter-bar">
+  <div class="search-bar" style="flex:1;max-width:400px;">
+    <span style="color:var(--gray-400);">🔍</span>
+    <input type="text" name="q" value="{{ request.GET.q }}" placeholder="Référence, adresse...">
+  </div>
+  <select name="statut" class="form-control" style="max-width:200px;" onchange="this.form.submit()">
+    <option value="">Tous les statuts</option>
+    {% for val, label in statut_choices %}
+    <option value="{{ val }}" {% if request.GET.statut == val %}selected{% endif %}>{{ label }}</option>
+    {% endfor %}
+  </select>
+  <select name="commune" class="form-control" style="max-width:200px;" onchange="this.form.submit()">
+    <option value="">Toutes communes</option>
+  </select>
+  <button type="submit" class="btn btn-secondary">Filtrer</button>
+  <a href="/dashboard/admin-panel/terrains/" class="btn btn-ghost">Réinitialiser</a>
+</form>
+
+<div class="table-wrapper">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Référence</th>
+        <th>Commune</th>
+        <th>Superficie</th>
+        <th>Statut</th>
+        <th>Zone</th>
+        <th>Propriétaire</th>
+        <th>Alerte</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for t in terrains %}
+      <tr>
+        <td>
+          <div style="font-weight:600;font-family:monospace;font-size:0.8125rem;">{{ t.reference_cadastrale }}</div>
+          <div style="font-size:0.75rem;color:var(--gray-400);">{{ t.numero_lot }}</div>
+        </td>
+        <td>{{ t.commune.nom|default:"—" }}</td>
+        <td>{{ t.superficie|floatformat:0 }} m²</td>
+        <td><span class="badge badge-{{ t.statut }}">{{ t.get_statut_display }}</span></td>
+        <td>{{ t.get_zone_usage_display }}</td>
+        <td style="font-size:0.8125rem;">{{ t.proprietaire_actuel|default:"Non assigné" }}</td>
+        <td>{% if t.alerte_active %}<span style="color:var(--red);">⚠️ Oui</span>{% else %}<span style="color:var(--gray-400);">—</span>{% endif %}</td>
+        <td>
+          <div style="display:flex;gap:0.375rem;">
+            <a href="/dashboard/terrains/{{ t.pk }}/" class="btn btn-ghost btn-sm">👁️</a>
+            <a href="/dashboard/admin-panel/terrains/{{ t.pk }}/modifier/" class="btn btn-outline btn-sm">✏️</a>
+          </div>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="8" style="text-align:center;padding:3rem;color:var(--gray-400);">
+          <div style="font-size:2rem;margin-bottom:0.5rem;">🏘️</div>
+          Aucun terrain trouvé
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

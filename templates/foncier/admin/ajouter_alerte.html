@@ -1,0 +1,33 @@
+{% extends 'base_dashboard.html' %}
+{% block title %}Créer une alerte{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div><h1 class="page-title">🚨 Créer une alerte</h1></div>
+  <a href="/dashboard/admin-panel/alertes/" class="btn btn-ghost">← Retour</a>
+</div>
+<div style="max-width:600px;">
+  <div class="card">
+    <form method="post">
+      {% csrf_token %}
+      <div class="form-group">
+        <label class="form-label">Terrain concerné *</label>
+        <select name="terrain" class="form-control" required>
+          <option value="">Sélectionner un terrain...</option>
+          {% for t in terrains %}<option value="{{ t.pk }}">{{ t.reference_cadastrale }} — {{ t.commune.nom }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Type d'alerte *</label>
+        <select name="type_alerte" class="form-control" required>
+          {% for val, label in type_choices %}<option value="{{ val }}">{{ label }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description *</label>
+        <textarea name="description" class="form-control" rows="5" placeholder="Décrivez l'alerte en détail..." required></textarea>
+      </div>
+      <button type="submit" class="btn btn-danger w-full">🚨 Créer l'alerte</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

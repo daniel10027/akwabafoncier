@@ -1,0 +1,150 @@
+{% extends 'base_dashboard.html' %}
+{% block title %}Tableau de bord{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Bonjour, {{ user.first_name|default:user.username }} 👋</h1>
+    <p class="page-subtitle">Bienvenue sur votre espace AkwabaFoncier — {{ user.get_role_display }}</p>
+  </div>
+  <a href="/cartographie/" class="btn btn-primary">🗺️ Voir la carte</a>
+</div>
+
+<!-- STATS -->
+<div class="grid-4" style="margin-bottom:2rem;">
+  <div class="stat-card">
+    <div class="stat-icon orange">🏘️</div>
+    <div>
+      <div class="stat-value">{{ terrains|length }}</div>
+      <div class="stat-label">Mes terrains</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon blue">📋</div>
+    <div>
+      <div class="stat-value">{{ demandes|length }}</div>
+      <div class="stat-label">Mes demandes</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon purple">⚠️</div>
+    <div>
+      <div class="stat-value">{{ reclamations|length }}</div>
+      <div class="stat-label">Mes réclamations</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon green">✅</div>
+    <div>
+      <div class="stat-value">{% if user.est_verifie %}Vérifié{% else %}Non{% endif %}</div>
+      <div class="stat-label">Statut compte</div>
+    </div>
+  </div>
+</div>
+
+<div class="grid-2" style="gap:1.5rem;margin-bottom:1.5rem;">
+  <!-- ACTIONS RAPIDES -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">⚡ Actions rapides</span>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:0.75rem;">
+      <a href="/dashboard/terrains/verification/" class="btn btn-primary">🔍 Vérifier un terrain avant achat</a>
+      <a href="/cartographie/" class="btn btn-outline">🗺️ Ouvrir la carte interactive</a>
+      <a href="/dashboard/demandes/nouvelle/" class="btn btn-ghost">📝 Nouvelle demande administrative</a>
+      <a href="/dashboard/reclamations/nouvelle/" class="btn btn-ghost" style="color:var(--red);">🚨 Déposer une réclamation</a>
+    </div>
+  </div>
+
+  <!-- VERIFICATION RAPIDE -->
+  <div class="card" style="border-top:3px solid var(--orange);">
+    <div class="card-header">
+      <span class="card-title">🔍 Vérification rapide</span>
+    </div>
+    <p style="font-size:0.875rem;color:var(--gray-500);margin-bottom:1rem;">Entrez la référence cadastrale d'un terrain pour vérifier son statut instantanément.</p>
+    <form method="post" action="/dashboard/terrains/verification/">
+      {% csrf_token %}
+      <div class="form-group">
+        <input type="text" name="reference" class="form-control" placeholder="Ex: CI-ABJ-COCODY-00847" style="font-size:1rem;padding:0.875rem;">
+      </div>
+      <button type="submit" class="btn btn-primary w-full">Vérifier maintenant</button>
+    </form>
+    <div style="margin-top:0.875rem;padding-top:0.875rem;border-top:1px solid var(--gray-100);">
+      <p style="font-size:0.75rem;color:var(--gray-400);">💡 Un rapport complet coûte 5 000 FCFA et inclut l'historique et le certificat de vérification.</p>
+    </div>
+  </div>
+</div>
+
+<div class="grid-2" style="gap:1.5rem;">
+  <!-- MES DEMANDES RECENTES -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">📋 Mes demandes récentes</span>
+      <a href="/dashboard/demandes/" class="btn btn-ghost btn-sm">Voir tout</a>
+    </div>
+    {% if demandes %}
+      <div style="display:flex;flex-direction:column;gap:0.625rem;">
+        {% for d in demandes %}
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:0.75rem;background:var(--gray-50);border-radius:var(--radius-sm);">
+          <div>
+            <div style="font-weight:600;font-size:0.875rem;">{{ d.reference }}</div>
+            <div style="font-size:0.75rem;color:var(--gray-500);">{{ d.get_type_demande_display }} — {{ d.terrain.reference_cadastrale }}</div>
+          </div>
+          <span class="badge badge-{% if d.statut == 'approuvee' %}success{% elif d.statut == 'rejetee' %}danger{% elif d.statut == 'soumise' %}info{% else %}warning{% endif %}">
+            {{ d.get_statut_display }}
+          </span>
+        </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <div class="empty-icon">📋</div>
+        <div class="empty-title">Aucune demande</div>
+        <p style="font-size:0.875rem;margin:0.5rem 0 1rem;">Vous n'avez pas encore soumis de demande administrative.</p>
+        <a href="/dashboard/demandes/nouvelle/" class="btn btn-primary btn-sm">Nouvelle demande</a>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- MES RECLAMATIONS -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">⚠️ Mes réclamations</span>
+      <a href="/dashboard/reclamations/" class="btn btn-ghost btn-sm">Voir tout</a>
+    </div>
+    {% if reclamations %}
+      <div style="display:flex;flex-direction:column;gap:0.625rem;">
+        {% for r in reclamations %}
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:0.75rem;background:var(--gray-50);border-radius:var(--radius-sm);">
+          <div>
+            <div style="font-weight:600;font-size:0.875rem;">{{ r.reference }}</div>
+            <div style="font-size:0.75rem;color:var(--gray-500);">{{ r.objet|truncatechars:40 }}</div>
+          </div>
+          <span class="badge badge-{% if r.statut == 'resolue' %}success{% elif r.statut == 'deposee' %}warning{% else %}info{% endif %}">
+            {{ r.get_statut_display }}
+          </span>
+        </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <div class="empty-icon">⚠️</div>
+        <div class="empty-title">Aucune réclamation</div>
+        <p style="font-size:0.875rem;margin:0.5rem 0 1rem;">Vous n'avez pas de réclamation en cours.</p>
+        <a href="/dashboard/reclamations/nouvelle/" class="btn btn-outline btn-sm">Déposer une réclamation</a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- INFO ABONNEMENT -->
+{% if not user.abonnement or not user.abonnement.est_actif %}
+<div style="margin-top:1.5rem;background:linear-gradient(135deg,var(--orange),var(--orange-dark));border-radius:var(--radius-lg);padding:1.5rem 2rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;">
+  <div>
+    <div style="font-family:var(--font-heading);font-weight:700;color:white;font-size:1.125rem;margin-bottom:0.25rem;">🚀 Passez à AkwabaFoncier Pro</div>
+    <div style="color:rgba(255,255,255,0.85);font-size:0.875rem;">Vérifications illimitées, accès prioritaire et rapports professionnels.</div>
+  </div>
+  <a href="/paiements/abonnement/" class="btn btn-lg" style="background:white;color:var(--orange);flex-shrink:0;">Voir les offres</a>
+</div>
+{% endif %}
+{% endblock %}

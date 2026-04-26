@@ -1,0 +1,268 @@
+{% extends 'base_dashboard.html' %}
+{% block title %}Rapport — {{ terrain.reference_cadastrale }}{% endblock %}
+
+{% block extra_head %}
+<style>
+@media print {
+  .sidebar, .navbar, .btn, .no-print { display: none !important; }
+  .main-content { margin-left: 0 !important; }
+  .rapport-container { box-shadow: none !important; }
+}
+.rapport-container {
+  max-width: 800px;
+  margin: 0 auto;
+  background: white;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+.rapport-header {
+  background: linear-gradient(135deg, #0a0f1e 0%, #1a2340 100%);
+  color: white;
+  padding: 2.5rem;
+  position: relative;
+  overflow: hidden;
+}
+.rapport-header::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(247,127,0,0.15), transparent 70%);
+}
+.rapport-body { padding: 2rem; }
+.rapport-section { margin-bottom: 2rem; }
+.rapport-section-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--gray-400);
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--gray-100);
+}
+.rapport-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+.rapport-field {
+  background: var(--gray-50);
+  padding: 0.875rem;
+  border-radius: var(--radius-sm);
+}
+.rapport-field-label { font-size: 0.6875rem; text-transform: uppercase; color: var(--gray-400); font-weight: 700; letter-spacing: 0.05em; margin-bottom: 0.25rem; }
+.rapport-field-value { font-size: 0.9375rem; font-weight: 600; color: var(--gray-800); }
+
+.verdict-box {
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+.verdict-ok { background: #DCFCE7; border: 2px solid #86EFAC; }
+.verdict-warn { background: #FEF3C7; border: 2px solid #FCD34D; }
+.verdict-bad { background: #FEE2E2; border: 2px solid #FCA5A5; }
+.verdict-icon { font-size: 2.5rem; flex-shrink: 0; }
+.verdict-title { font-size: 1.125rem; font-weight: 700; }
+.verdict-desc { font-size: 0.875rem; margin-top: 0.25rem; opacity: 0.8; }
+
+.watermark {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  opacity: 0.06;
+  font-size: 6rem;
+  font-weight: 900;
+  color: var(--orange);
+  pointer-events: none;
+  font-family: var(--font-heading);
+  transform: rotate(-20deg);
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header no-print">
+  <div>
+    <h1 class="page-title">📊 Rapport de vérification</h1>
+    <p class="page-subtitle">{{ terrain.reference_cadastrale }}</p>
+  </div>
+  <div style="display:flex;gap:0.75rem;">
+    <button onclick="window.print()" class="btn btn-primary">🖨️ Imprimer / Télécharger PDF</button>
+    <a href="/dashboard/terrains/{{ terrain.pk }}/" class="btn btn-ghost">← Retour fiche</a>
+  </div>
+</div>
+
+<div class="rapport-container">
+  <!-- HEADER -->
+  <div class="rapport-header">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;position:relative;z-index:1;">
+      <div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:1rem;">
+          <div class="navbar-flag" style="width:32px;height:22px;border-radius:4px;"><span class="flag-o"></span><span class="flag-w"></span><span class="flag-g"></span></div>
+          <span style="font-family:var(--font-heading);font-weight:800;font-size:1.125rem;">AkwabaFoncier</span>
+        </div>
+        <h1 style="font-size:1.5rem;font-weight:800;color:white;margin-bottom:0.25rem;">RAPPORT DE VÉRIFICATION FONCIÈRE</h1>
+        <p style="color:rgba(255,255,255,0.6);font-size:0.875rem;">Document officiel de vérification — Plateforme Nationale</p>
+      </div>
+      <div style="text-align:right;">
+        <div style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:var(--radius);padding:0.75rem 1rem;">
+          <div style="font-size:0.6875rem;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.08em;">Référence rapport</div>
+          <div style="font-family:monospace;font-weight:700;color:white;font-size:0.9375rem;margin-top:0.25rem;">RPT-{{ terrain.reference_cadastrale }}</div>
+          <div style="font-size:0.75rem;color:rgba(255,255,255,0.5);margin-top:0.375rem;">Généré le {% now "d/m/Y à H:i" %}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="rapport-body">
+    <!-- VERDICT -->
+    {% if terrain.alerte_active or terrain.statut == 'litige' %}
+    <div class="verdict-box verdict-bad">
+      <div class="verdict-icon">🚨</div>
+      <div>
+        <div class="verdict-title" style="color:#991B1B;">Attention — Risques détectés</div>
+        <div class="verdict-desc" style="color:#7F1D1D;">Ce terrain présente des alertes actives. Une vérification approfondie est fortement recommandée avant toute transaction. Consultez un notaire agréé.</div>
+      </div>
+    </div>
+    {% elif terrain.statut == 'acd' %}
+    <div class="verdict-box verdict-warn">
+      <div class="verdict-icon">⚠️</div>
+      <div>
+        <div class="verdict-title" style="color:#92400E;">Procédure en cours</div>
+        <div class="verdict-desc" style="color:#78350F;">Une demande d'ACD est en cours sur ce terrain. La situation juridique n'est pas encore définitivement réglée.</div>
+      </div>
+    </div>
+    {% else %}
+    <div class="verdict-box verdict-ok">
+      <div class="verdict-icon">✅</div>
+      <div>
+        <div class="verdict-title" style="color:#14532D;">Terrain vérifié — Aucune alerte détectée</div>
+        <div class="verdict-desc" style="color:#166534;">Aucun litige, alerte ou irrégularité n'a été détecté sur ce terrain dans notre base de données. Ce rapport ne remplace pas une vérification notariale.</div>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- INFOS TERRAIN -->
+    <div class="rapport-section">
+      <div class="rapport-section-title">📋 Informations du terrain</div>
+      <div class="rapport-grid">
+        <div class="rapport-field">
+          <div class="rapport-field-label">Référence cadastrale</div>
+          <div class="rapport-field-value" style="font-family:monospace;">{{ terrain.reference_cadastrale }}</div>
+        </div>
+        <div class="rapport-field">
+          <div class="rapport-field-label">Statut juridique</div>
+          <div class="rapport-field-value"><span class="badge badge-{{ terrain.statut }}">{{ terrain.get_statut_display }}</span></div>
+        </div>
+        <div class="rapport-field">
+          <div class="rapport-field-label">Commune</div>
+          <div class="rapport-field-value">{{ terrain.commune.nom|default:"—" }}</div>
+        </div>
+        <div class="rapport-field">
+          <div class="rapport-field-label">Superficie</div>
+          <div class="rapport-field-value">{{ terrain.superficie|floatformat:0 }} m²</div>
+        </div>
+        <div class="rapport-field">
+          <div class="rapport-field-label">Zone d'usage</div>
+          <div class="rapport-field-value">{{ terrain.get_zone_usage_display }}</div>
+        </div>
+        <div class="rapport-field">
+          <div class="rapport-field-label">Numéro de lot</div>
+          <div class="rapport-field-value">{{ terrain.numero_lot|default:"—" }}</div>
+        </div>
+        <div class="rapport-field" style="grid-column:span 2;">
+          <div class="rapport-field-label">Adresse</div>
+          <div class="rapport-field-value">{{ terrain.adresse_complete|default:"Non renseignée" }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROPRIÉTAIRE -->
+    <div class="rapport-section">
+      <div class="rapport-section-title">👤 Propriétaire officiel</div>
+      <div class="rapport-grid">
+        <div class="rapport-field">
+          <div class="rapport-field-label">Nom enregistré</div>
+          <div class="rapport-field-value">{% if terrain.proprietaire_actuel %}{{ terrain.proprietaire_actuel.get_full_name }}{% else %}Non communiqué{% endif %}</div>
+        </div>
+        <div class="rapport-field">
+          <div class="rapport-field-label">Valeur estimée</div>
+          <div class="rapport-field-value">{% if terrain.valeur_estimee %}{{ terrain.valeur_estimee|floatformat:0 }} FCFA{% else %}Non renseignée{% endif %}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ALERTES -->
+    <div class="rapport-section">
+      <div class="rapport-section-title">🚨 Alertes et litiges</div>
+      {% if alertes %}
+        {% for a in alertes %}
+        <div style="background:#FEF2F2;border:1px solid #FCA5A5;border-radius:var(--radius-sm);padding:1rem;margin-bottom:0.75rem;">
+          <div style="display:flex;gap:0.75rem;align-items:flex-start;">
+            <span>🚨</span>
+            <div>
+              <div style="font-weight:700;color:#991B1B;font-size:0.875rem;">{{ a.get_type_alerte_display }}</div>
+              <div style="font-size:0.8125rem;color:#7F1D1D;margin-top:0.25rem;">{{ a.description }}</div>
+              <div style="font-size:0.75rem;color:#9CA3AF;margin-top:0.375rem;">Signalé le {{ a.date_creation|date:"d/m/Y" }}</div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div style="display:flex;align-items:center;gap:0.5rem;color:var(--green);font-size:0.875rem;padding:0.875rem;background:var(--green-pale);border-radius:var(--radius-sm);">
+          ✅ Aucune alerte ni litige enregistré sur ce terrain.
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- HISTORIQUE -->
+    {% if historique %}
+    <div class="rapport-section">
+      <div class="rapport-section-title">📅 Historique récent</div>
+      <div style="display:flex;flex-direction:column;gap:0.5rem;">
+        {% for h in historique %}
+        <div style="display:flex;gap:1rem;align-items:flex-start;padding:0.625rem;background:var(--gray-50);border-radius:var(--radius-sm);">
+          <div style="width:8px;height:8px;background:var(--orange);border-radius:50%;margin-top:5px;flex-shrink:0;"></div>
+          <div style="flex:1;">
+            <div style="font-size:0.8125rem;font-weight:600;">{{ h.action }}</div>
+            <div style="font-size:0.75rem;color:var(--gray-500);">{{ h.description }}</div>
+          </div>
+          <div style="font-size:0.75rem;color:var(--gray-400);">{{ h.date_action|date:"d/m/Y" }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- DISCLAIMER -->
+    <div style="background:var(--gray-50);border-radius:var(--radius);padding:1.25rem;margin-top:2rem;border:1px solid var(--gray-200);">
+      <div style="font-size:0.75rem;color:var(--gray-500);line-height:1.7;">
+        <strong>⚠️ Avertissement légal :</strong> Ce rapport est généré à partir des données disponibles dans la base AkwabaFoncier à la date indiquée. Il ne constitue pas un document juridique officiel et ne remplace en aucun cas une vérification effectuée par un notaire agréé, la Direction des Affaires Domaniales et Foncières (DADF) ou la Conservation Foncière compétente. AkwabaFoncier décline toute responsabilité en cas d'utilisation de ce rapport comme seule base d'une décision d'achat.
+      </div>
+    </div>
+
+    <!-- SIGNATURE -->
+    <div style="margin-top:2rem;padding-top:1.5rem;border-top:2px solid var(--gray-200);display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <div style="font-size:0.75rem;color:var(--gray-400);">Généré automatiquement par</div>
+        <div style="font-family:var(--font-heading);font-weight:800;color:var(--orange);font-size:1rem;">AkwabaFoncier</div>
+        <div style="font-size:0.6875rem;color:var(--gray-400);">www.akwabafoncier.ci</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:0.75rem;color:var(--gray-400);">Vérification demandée par</div>
+        <div style="font-weight:600;font-size:0.875rem;">{{ request.user.get_full_name|default:request.user.username }}</div>
+        <div style="font-size:0.75rem;color:var(--gray-400);">{% now "d/m/Y à H:i" %}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="watermark">AF</div>
+{% endblock %}

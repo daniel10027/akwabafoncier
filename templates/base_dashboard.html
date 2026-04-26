@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Dashboard{% endblock %} — AkwabaFoncier</title>
+  <link rel="stylesheet" href="/static/css/akwaba.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏛️</text></svg>">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="/" class="navbar-brand">
+    <div class="navbar-flag">
+      <span class="flag-o"></span>
+      <span class="flag-w"></span>
+      <span class="flag-g"></span>
+    </div>
+    AkwabaFoncier
+  </a>
+
+  <div style="display:flex;align-items:center;gap:1.5rem;">
+    <a href="/cartographie/" class="btn btn-ghost btn-sm">🗺️ Carte</a>
+    {% if user.role in 'admin_operationnel,super_admin' %}
+      <a href="/dashboard/admin-panel/" class="btn btn-outline btn-sm">⚙️ Admin</a>
+    {% endif %}
+  </div>
+
+  <div class="navbar-actions">
+    <div style="display:flex;align-items:center;gap:0.5rem;padding:0.375rem 0.875rem;background:var(--gray-100);border-radius:100px;">
+      <div style="width:30px;height:30px;background:linear-gradient(135deg,var(--orange),var(--orange-dark));border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:0.8rem;">
+        {{ user.first_name|first|upper }}{% if user.last_name %}{{ user.last_name|first|upper }}{% endif %}
+      </div>
+      <div>
+        <div style="font-size:0.8125rem;font-weight:600;color:var(--gray-800);">{{ user.get_full_name|default:user.username }}</div>
+        <div style="font-size:0.6875rem;color:var(--gray-500);">{{ user.get_role_display }}</div>
+      </div>
+    </div>
+    <!-- Notifications -->
+    <div style="position:relative;">
+      <button onclick="toggleNotifs(this)" id="notif-btn" style="background:var(--gray-100);border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;position:relative;">
+        🔔
+        <span id="notif-badge" style="display:none;position:absolute;top:2px;right:2px;width:8px;height:8px;background:var(--red);border-radius:50%;"></span>
+      </button>
+      <div id="notif-dropdown" style="display:none;position:absolute;top:44px;right:0;background:white;border-radius:var(--radius);box-shadow:var(--shadow-lg);width:300px;z-index:9999;border:1px solid var(--gray-100);">
+        <div style="padding:0.875rem 1rem;border-bottom:1px solid var(--gray-100);font-weight:600;font-size:0.875rem;">🔔 Notifications</div>
+        <div id="notif-list" style="max-height:280px;overflow-y:auto;">
+          <div style="text-align:center;padding:2rem;color:var(--gray-400);font-size:0.875rem;">Aucune notification</div>
+        </div>
+        <div style="padding:0.75rem;border-top:1px solid var(--gray-100);">
+          <a href="/dashboard/demandes/" style="font-size:0.8125rem;color:var(--orange);font-weight:600;">Voir mes demandes →</a>
+        </div>
+      </div>
+    </div>
+    <a href="/auth/profil/" class="btn btn-ghost btn-sm">Mon profil</a>
+    <a href="/auth/logout/" class="btn btn-ghost btn-sm" style="color:var(--red);">Déconnexion</a>
+  </div>
+</nav>
+
+{% if messages %}
+<div style="padding:0.5rem 1.5rem;background:var(--gray-50);">
+  {% for message in messages %}
+    <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %}">
+      {% if message.tags == 'success' %}✅{% elif message.tags == 'error' %}❌{% else %}ℹ️{% endif %}
+      {{ message }}
+    </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<div class="app-layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    {% if user.role in 'admin_operationnel,super_admin' %}
+      <!-- ADMIN SIDEBAR -->
+      <span class="sidebar-section-label">Tableau de bord</span>
+      <a href="/dashboard/admin-panel/" class="sidebar-link {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}">
+        <span class="icon">📊</span> Vue d'ensemble
+      </a>
+      <a href="/dashboard/admin-panel/statistiques/" class="sidebar-link {% if 'statistiques' in request.path %}active{% endif %}">
+        <span class="icon">📈</span> Statistiques
+      </a>
+
+      <span class="sidebar-section-label">Gestion Foncière</span>
+      <a href="/dashboard/admin-panel/terrains/" class="sidebar-link {% if 'admin-panel/terrains' in request.path %}active{% endif %}">
+        <span class="icon">🏘️</span> Terrains
+      </a>
+      <a href="/dashboard/admin-panel/terrains/ajouter/" class="sidebar-link {% if 'ajouter' in request.path %}active{% endif %}">
+        <span class="icon">➕</span> Ajouter terrain
+      </a>
+      <a href="/cartographie/" class="sidebar-link">
+        <span class="icon">🗺️</span> Cartographie
+      </a>
+
+      <span class="sidebar-section-label">Procédures</span>
+      <a href="/dashboard/admin-panel/demandes/" class="sidebar-link {% if 'admin-panel/demandes' in request.path %}active{% endif %}">
+        <span class="icon">📋</span> Demandes
+      </a>
+      <a href="/dashboard/admin-panel/reclamations/" class="sidebar-link {% if 'admin-panel/reclamations' in request.path %}active{% endif %}">
+        <span class="icon">⚠️</span> Réclamations
+      </a>
+      <a href="/dashboard/admin-panel/alertes/" class="sidebar-link {% if 'admin-panel/alertes' in request.path %}active{% endif %}">
+        <span class="icon">🚨</span> Alertes actives
+      </a>
+
+      <span class="sidebar-section-label">Administration</span>
+      <a href="/dashboard/admin-panel/utilisateurs/" class="sidebar-link {% if 'admin-panel/utilisateurs' in request.path %}active{% endif %}">
+        <span class="icon">👥</span> Utilisateurs
+      </a>
+      <a href="/paiements/" class="sidebar-link">
+        <span class="icon">💳</span> Paiements
+      </a>
+      <a href="/admin/" class="sidebar-link">
+        <span class="icon">⚙️</span> Admin Django
+      </a>
+
+    {% else %}
+      <!-- CITOYEN / PRO SIDEBAR -->
+      <span class="sidebar-section-label">Mon espace</span>
+      <a href="/dashboard/" class="sidebar-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+        <span class="icon">🏠</span> Tableau de bord
+      </a>
+      <a href="/auth/profil/" class="sidebar-link {% if 'profil' in request.path %}active{% endif %}">
+        <span class="icon">👤</span> Mon profil
+      </a>
+      <a href="/paiements/" class="sidebar-link">
+        <span class="icon">💳</span> Mes paiements
+      </a>
+
+      <span class="sidebar-section-label">Foncier</span>
+      <a href="/cartographie/" class="sidebar-link {% if 'cartographie' in request.path %}active{% endif %}">
+        <span class="icon">🗺️</span> Carte interactive
+      </a>
+      <a href="/dashboard/terrains/" class="sidebar-link {% if 'terrains' in request.path %}active{% endif %}">
+        <span class="icon">🏘️</span> Terrains
+      </a>
+      <a href="/dashboard/terrains/verification/" class="sidebar-link {% if 'verification' in request.path %}active{% endif %}">
+        <span class="icon">🔍</span> Vérifier un terrain
+      </a>
+
+      <span class="sidebar-section-label">Procédures</span>
+      <a href="/dashboard/demandes/" class="sidebar-link {% if request.resolver_match.url_name == 'mes_demandes' %}active{% endif %}">
+        <span class="icon">📋</span> Mes demandes
+      </a>
+      <a href="/dashboard/demandes/nouvelle/" class="sidebar-link {% if 'nouvelle' in request.path and 'demande' in request.path %}active{% endif %}">
+        <span class="icon">📝</span> Nouvelle demande
+      </a>
+      <a href="/dashboard/reclamations/" class="sidebar-link {% if 'reclamations' in request.path %}active{% endif %}">
+        <span class="icon">⚠️</span> Mes réclamations
+      </a>
+      <a href="/dashboard/reclamations/nouvelle/" class="sidebar-link">
+        <span class="icon">🚨</span> Déposer une réclamation
+      </a>
+
+      <span class="sidebar-section-label">Abonnement</span>
+      <a href="/paiements/abonnement/" class="sidebar-link">
+        <span class="icon">⭐</span> Passer Pro
+      </a>
+    {% endif %}
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+    {% block content %}{% endblock %}
+  </main>
+</div>
+
+<script src="/static/js/akwaba.js"></script>
+<script>
+// Notifications
+function toggleNotifs(btn) {
+  const dd = document.getElementById('notif-dropdown');
+  dd.style.display = dd.style.display === 'none' ? 'block' : 'none';
+  if (dd.style.display === 'block') loadNotifs();
+}
+
+async function loadNotifs() {
+  try {
+    const r = await fetch('/dashboard/api/notifications/');
+    const d = await r.json();
+    const list = document.getElementById('notif-list');
+    const badge = document.getElementById('notif-badge');
+    if (d.notifications && d.notifications.length > 0) {
+      badge.style.display = 'block';
+      list.innerHTML = d.notifications.map(n =>
+        `<a href="${n.url}" style="display:block;padding:0.75rem 1rem;border-bottom:1px solid var(--gray-100);font-size:0.8125rem;color:var(--gray-700);text-decoration:none;"
+           onmouseover="this.style.background='var(--gray-50)'" onmouseout="this.style.background=''">
+          <div style="font-weight:600;">${n.message}</div>
+          <div style="color:var(--gray-400);font-size:0.75rem;margin-top:0.2rem;">${n.date}</div>
+        </a>`
+      ).join('');
+    } else {
+      badge.style.display = 'none';
+      list.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--gray-400);font-size:0.875rem;">Aucune nouvelle notification</div>';
+    }
+  } catch(e) {}
+}
+
+// Close dropdown on outside click
+document.addEventListener('click', function(e) {
+  const wrapper = document.getElementById('notif-btn');
+  const dd = document.getElementById('notif-dropdown');
+  if (dd && wrapper && !wrapper.contains(e.target) && !dd.contains(e.target)) {
+    dd.style.display = 'none';
+  }
+});
+
+// Auto-load badge count on page load
+document.addEventListener('DOMContentLoaded', async function() {
+  try {
+    const r = await fetch('/dashboard/api/notifications/');
+    const d = await r.json();
+    if (d.count > 0) {
+      const badge = document.getElementById('notif-badge');
+      if (badge) badge.style.display = 'block';
+    }
+  } catch(e) {}
+});
+</script>
+
+{% block extra_js %}{% endblock %}
+</body>
+</html>

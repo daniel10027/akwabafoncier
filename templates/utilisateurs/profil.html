@@ -1,0 +1,65 @@
+{% extends 'base_dashboard.html' %}
+{% block title %}Mon profil{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1 class="page-title">👤 Mon profil</h1>
+</div>
+<div class="grid-2" style="gap:1.5rem;">
+  <div class="card">
+    <div class="card-header"><span class="card-title">Informations personnelles</span></div>
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="grid-2" style="gap:1rem;">
+        <div class="form-group">
+          <label class="form-label">Prénom</label>
+          <input type="text" name="first_name" class="form-control" value="{{ user.first_name }}">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nom</label>
+          <input type="text" name="last_name" class="form-control" value="{{ user.last_name }}">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-control" value="{{ user.email }}" disabled style="background:var(--gray-50);">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Téléphone</label>
+        <input type="tel" name="telephone" class="form-control" value="{{ user.telephone }}" placeholder="+225 07 00 00 00 00">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Adresse</label>
+        <textarea name="adresse" class="form-control" rows="3">{{ user.adresse }}</textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Photo de profil</label>
+        <input type="file" name="photo" class="form-control" accept="image/*">
+      </div>
+      <button type="submit" class="btn btn-primary">💾 Enregistrer</button>
+    </form>
+  </div>
+  <div>
+    <div class="card" style="margin-bottom:1rem;">
+      <div class="card-header"><span class="card-title">Mon compte</span></div>
+      <div style="display:flex;flex-direction:column;gap:0.75rem;font-size:0.875rem;">
+        <div style="display:flex;justify-content:space-between;"><span style="color:var(--gray-500);">Nom d'utilisateur</span><span style="font-weight:600;">{{ user.username }}</span></div>
+        <div style="display:flex;justify-content:space-between;"><span style="color:var(--gray-500);">Rôle</span><span class="badge badge-info">{{ user.get_role_display }}</span></div>
+        <div style="display:flex;justify-content:space-between;"><span style="color:var(--gray-500);">Compte vérifié</span><span>{% if user.est_verifie %}✅ Oui{% else %}⏳ Non{% endif %}</span></div>
+        <div style="display:flex;justify-content:space-between;"><span style="color:var(--gray-500);">Membre depuis</span><span>{{ user.date_joined|date:"d/m/Y" }}</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">Abonnement</span></div>
+      {% if user.abonnement and user.abonnement.est_actif %}
+        <div style="background:var(--green-pale);border-radius:var(--radius-sm);padding:1rem;margin-bottom:1rem;">
+          <div style="font-weight:700;color:var(--green);">⭐ Plan {{ user.abonnement.get_plan_display }}</div>
+          <div style="font-size:0.8125rem;color:var(--green-dark);margin-top:0.25rem;">Valide jusqu'au {{ user.abonnement.date_fin|date:"d/m/Y" }}</div>
+        </div>
+      {% else %}
+        <p style="font-size:0.875rem;color:var(--gray-500);margin-bottom:1rem;">Vous utilisez le plan gratuit.</p>
+        <a href="/paiements/abonnement/" class="btn btn-primary btn-sm">Passer Pro</a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

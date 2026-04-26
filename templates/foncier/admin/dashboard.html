@@ -1,0 +1,198 @@
+{% extends 'base_dashboard.html' %}
+{% block title %}Administration{% endblock %}
+
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">⚙️ Tableau de bord administrateur</h1>
+    <p class="page-subtitle">Vue d'ensemble de la plateforme AkwabaFoncier</p>
+  </div>
+  <div style="display:flex;gap:0.75rem;">
+    <a href="/dashboard/admin-panel/terrains/ajouter/" class="btn btn-primary">➕ Ajouter terrain</a>
+    <a href="/dashboard/admin-panel/statistiques/" class="btn btn-outline">📊 Statistiques</a>
+  </div>
+</div>
+
+<!-- STAT CARDS -->
+<div class="grid-4" style="margin-bottom:2rem;">
+  <div class="stat-card">
+    <div class="stat-icon orange">🏘️</div>
+    <div>
+      <div class="stat-value">{{ stats.total_terrains }}</div>
+      <div class="stat-label">Terrains enregistrés</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon red">⚔️</div>
+    <div>
+      <div class="stat-value">{{ stats.terrains_litige }}</div>
+      <div class="stat-label">En litige</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon blue">📋</div>
+    <div>
+      <div class="stat-value">{{ stats.demandes_en_cours }}</div>
+      <div class="stat-label">Demandes en cours</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon purple">⚠️</div>
+    <div>
+      <div class="stat-value">{{ stats.reclamations_actives }}</div>
+      <div class="stat-label">Réclamations actives</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon red">🚨</div>
+    <div>
+      <div class="stat-value">{{ stats.alertes_actives }}</div>
+      <div class="stat-label">Alertes actives</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon green">👥</div>
+    <div>
+      <div class="stat-value">{{ stats.utilisateurs }}</div>
+      <div class="stat-label">Utilisateurs</div>
+    </div>
+  </div>
+  <div class="stat-card" style="grid-column:span 2;background:linear-gradient(135deg,var(--orange-pale),#fff8f0);">
+    <div class="stat-icon orange">🗺️</div>
+    <div>
+      <div style="font-size:0.875rem;font-weight:600;margin-bottom:0.5rem;">Actions rapides</div>
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+        <a href="/dashboard/admin-panel/terrains/ajouter/" class="btn btn-primary btn-sm">+ Terrain</a>
+        <a href="/dashboard/admin-panel/demandes/" class="btn btn-secondary btn-sm">Demandes</a>
+        <a href="/cartographie/" class="btn btn-secondary btn-sm">🗺️ Carte</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="grid-2" style="gap:1.5rem;margin-bottom:1.5rem;">
+  <!-- CHART TERRAINS PAR STATUT -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">📊 Terrains par statut</span>
+    </div>
+    <div style="height:260px;display:flex;align-items:center;justify-content:center;">
+      <canvas id="chartStatut"></canvas>
+    </div>
+  </div>
+
+  <!-- ALERTES RECENTES -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">🚨 Alertes récentes</span>
+      <a href="/dashboard/admin-panel/alertes/" class="btn btn-ghost btn-sm">Voir tout</a>
+    </div>
+    {% if stats.alertes_recentes %}
+      <div style="display:flex;flex-direction:column;gap:0.625rem;">
+        {% for alerte in stats.alertes_recentes %}
+        <div style="display:flex;align-items:flex-start;gap:0.75rem;padding:0.75rem;background:#FEF2F2;border-radius:var(--radius-sm);border-left:3px solid var(--red);">
+          <span style="font-size:1rem;flex-shrink:0;">🚨</span>
+          <div>
+            <div style="font-weight:600;font-size:0.8125rem;">{{ alerte.get_type_alerte_display }}</div>
+            <div style="font-size:0.75rem;color:var(--gray-500);">{{ alerte.terrain.reference_cadastrale }} — {{ alerte.description|truncatechars:60 }}</div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state" style="padding:2rem;">
+        <div class="empty-icon">✅</div>
+        <div class="empty-title">Aucune alerte active</div>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- DEMANDES RECENTES -->
+<div class="card">
+  <div class="card-header">
+    <span class="card-title">📋 Demandes récentes à traiter</span>
+    <a href="/dashboard/admin-panel/demandes/" class="btn btn-primary btn-sm">Gérer tout</a>
+  </div>
+  {% if stats.demandes_recentes %}
+  <div class="table-wrapper">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Référence</th>
+          <th>Type</th>
+          <th>Terrain</th>
+          <th>Demandeur</th>
+          <th>Date</th>
+          <th>Statut</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for d in stats.demandes_recentes %}
+        <tr>
+          <td><span style="font-weight:600;font-family:monospace;">{{ d.reference }}</span></td>
+          <td>{{ d.get_type_demande_display }}</td>
+          <td>{{ d.terrain.reference_cadastrale }}</td>
+          <td>{{ d.demandeur.get_full_name|default:d.demandeur.username }}</td>
+          <td style="color:var(--gray-500);font-size:0.8125rem;">{{ d.date_soumission|date:"d/m/Y" }}</td>
+          <td>
+            <span class="badge badge-{% if d.statut == 'approuvee' %}success{% elif d.statut == 'rejetee' %}danger{% elif d.statut == 'soumise' %}info{% else %}warning{% endif %}">
+              {{ d.get_statut_display }}
+            </span>
+          </td>
+          <td>
+            <a href="/dashboard/admin-panel/demandes/{{ d.pk }}/" class="btn btn-ghost btn-sm">Traiter →</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+    <div class="empty-state"><div class="empty-icon">📋</div><div class="empty-title">Aucune demande en cours</div></div>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Chart terrains par statut
+const ctx = document.getElementById('chartStatut').getContext('2d');
+const statutData = {{ stats.terrains_par_statut|safe }};
+const labels = statutData.map(d => {
+  const map = {libre:'Libre',titre_foncier:'Titre Foncier',acd:'ACD',litige:'Litige',reserve_etat:'Réservé',lotissement:'Lotissement',vendu:'Vendu'};
+  return map[d.statut] || d.statut;
+});
+const values = statutData.map(d => d.count);
+const colors = ['#22c55e','#3b82f6','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#6b7280'];
+
+new Chart(ctx, {
+  type: 'doughnut',
+  data: {
+    labels,
+    datasets: [{
+      data: values,
+      backgroundColor: colors,
+      borderWidth: 0,
+      hoverOffset: 8
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'right',
+        labels: { font: { size: 12, family: 'DM Sans' }, padding: 16 }
+      }
+    },
+    cutout: '65%'
+  }
+});
+</script>
+{% endblock %}

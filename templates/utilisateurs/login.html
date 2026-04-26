@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}Connexion{% endblock %}
+{% block content %}
+<div style="min-height:80vh;display:flex;align-items:center;justify-content:center;padding:2rem;">
+  <div style="width:100%;max-width:420px;">
+    <div style="text-align:center;margin-bottom:2rem;">
+      <div class="navbar-flag" style="margin:0 auto 1rem;width:40px;height:28px;border-radius:6px;"><span class="flag-o"></span><span class="flag-w"></span><span class="flag-g"></span></div>
+      <h1 style="font-size:1.75rem;font-weight:800;">Connexion</h1>
+      <p style="color:var(--gray-500);margin-top:0.375rem;">Accédez à votre espace AkwabaFoncier</p>
+    </div>
+    <div class="card" style="box-shadow:var(--shadow-lg);">
+      <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+          <label class="form-label">Nom d'utilisateur</label>
+          <input type="text" name="username" class="form-control" placeholder="votre_username" required autofocus>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Mot de passe</label>
+          <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn btn-primary w-full" style="margin-top:0.5rem;">Se connecter</button>
+      </form>
+      <div class="divider"></div>
+      <p style="text-align:center;font-size:0.875rem;color:var(--gray-500);">Pas encore de compte ? <a href="/auth/register/" style="font-weight:600;">Créer un compte</a></p>
+    </div>
+  </div>
+</div>
+{% endblock %}

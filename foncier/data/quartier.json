@@ -1,0 +1,634 @@
+[
+  {
+    "model": "foncier.quartier",
+    "pk": 1,
+    "fields": {
+      "nom": "Cocody",
+      "commune": 1
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 2,
+    "fields": {
+      "nom": "Plateau",
+      "commune": 1
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 3,
+    "fields": {
+      "nom": "Treichville",
+      "commune": 1
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 4,
+    "fields": {
+      "nom": "Marcory",
+      "commune": 1
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 5,
+    "fields": {
+      "nom": "Koumassi",
+      "commune": 1
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 6,
+    "fields": {
+      "nom": "Adjamé",
+      "commune": 1
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 7,
+    "fields": {
+      "nom": "Yopougon",
+      "commune": 1
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 8,
+    "fields": {
+      "nom": "Abobo",
+      "commune": 1
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 9,
+    "fields": {
+      "nom": "Port-Bouët",
+      "commune": 1
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 10,
+    "fields": {
+      "nom": "Bingerville",
+      "commune": 1
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 11,
+    "fields": {
+      "nom": "Anyama",
+      "commune": 1
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 12,
+    "fields": {
+      "nom": "Attécoubé",
+      "commune": 1
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 13,
+    "fields": {
+      "nom": "Songon",
+      "commune": 1
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 14,
+    "fields": {
+      "nom": "Williamsville",
+      "commune": 1
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 15,
+    "fields": {
+      "nom": "Deux-Plateaux",
+      "commune": 1
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 16,
+    "fields": {
+      "nom": "Riviera",
+      "commune": 1
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 17,
+    "fields": {
+      "nom": "M'pouto",
+      "commune": 1
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 18,
+    "fields": {
+      "nom": "Gonzagueville",
+      "commune": 1
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 19,
+    "fields": {
+      "nom": "Vridi",
+      "commune": 1
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 20,
+    "fields": {
+      "nom": "Zone 4",
+      "commune": 1
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 21,
+    "fields": {
+      "nom": "Niangon",
+      "commune": 1
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 22,
+    "fields": {
+      "nom": "Lokoa",
+      "commune": 1
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 23,
+    "fields": {
+      "nom": "Kennedy",
+      "commune": 1
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 24,
+    "fields": {
+      "nom": "Belleville",
+      "commune": 1
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 25,
+    "fields": {
+      "nom": "Sagbé",
+      "commune": 1
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 26,
+    "fields": {
+      "nom": "Koweït",
+      "commune": 1
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 27,
+    "fields": {
+      "nom": "Anoumabo",
+      "commune": 1
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 28,
+    "fields": {
+      "nom": "Biafra",
+      "commune": 1
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 29,
+    "fields": {
+      "nom": "Adjouffou",
+      "commune": 1
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 30,
+    "fields": {
+      "nom": "Ivoire Golf",
+      "commune": 1
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 31,
+    "fields": {
+      "nom": "Danga",
+      "commune": 1
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 32,
+    "fields": {
+      "nom": "Sogefia",
+      "commune": 1
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 33,
+    "fields": {
+      "nom": "Petit-Bassam",
+      "commune": 1
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 34,
+    "fields": {
+      "nom": "Dakar",
+      "commune": 1
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 35,
+    "fields": {
+      "nom": "Saint-Jean",
+      "commune": 1
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 36,
+    "fields": {
+      "nom": "Millionnaire",
+      "commune": 1
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 37,
+    "fields": {
+      "nom": "Blokosso",
+      "commune": 1
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 38,
+    "fields": {
+      "nom": "Bonoumin",
+      "commune": 1
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 39,
+    "fields": {
+      "nom": "Abidjan-Lac",
+      "commune": 1
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 40,
+    "fields": {
+      "nom": "Sikensi",
+      "commune": 1
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 41,
+    "fields": {
+      "nom": "Noumozon",
+      "commune": 1
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 42,
+    "fields": {
+      "nom": "N'Dotré",
+      "commune": 1
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 43,
+    "fields": {
+      "nom": "Kokoman",
+      "commune": 1
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 44,
+    "fields": {
+      "nom": "Aghien",
+      "commune": 1
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 45,
+    "fields": {
+      "nom": "BANCO",
+      "commune": 1
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 46,
+    "fields": {
+      "nom": "Niangon-Sud",
+      "commune": 1
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 47,
+    "fields": {
+      "nom": "Niangon-Nord",
+      "commune": 1
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 48,
+    "fields": {
+      "nom": "Gbagba",
+      "commune": 1
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 49,
+    "fields": {
+      "nom": "Sogebac",
+      "commune": 1
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 50,
+    "fields": {
+      "nom": "Bouaké Centre",
+      "commune": 3
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 51,
+    "fields": {
+      "nom": "Bouaké Air France",
+      "commune": 3
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 52,
+    "fields": {
+      "nom": "Bouaké Belleville",
+      "commune": 3
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 53,
+    "fields": {
+      "nom": "Bouaké Dar Es Salam",
+      "commune": 3
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 54,
+    "fields": {
+      "nom": "Bouaké Kennedy",
+      "commune": 3
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 55,
+    "fields": {
+      "nom": "Bouaké Koko",
+      "commune": 3
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 56,
+    "fields": {
+      "nom": "Bouaké N'gattakro",
+      "commune": 3
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 57,
+    "fields": {
+      "nom": "Bouaké Niamien",
+      "commune": 3
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 58,
+    "fields": {
+      "nom": "Bouaké Nimbo",
+      "commune": 3
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 59,
+    "fields": {
+      "nom": "Bouaké Quartier Administratif",
+      "commune": 3
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 60,
+    "fields": {
+      "nom": "Bouaké Quartier Commercial",
+      "commune": 3
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 61,
+    "fields": {
+      "nom": "Daloa Centre",
+      "commune": 4
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 62,
+    "fields": {
+      "nom": "Daloa N'Gattakro",
+      "commune": 4
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 63,
+    "fields": {
+      "nom": "Daloa Belleville",
+      "commune": 4
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 64,
+    "fields": {
+      "nom": "Daloa Kennedy",
+      "commune": 4
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 65,
+    "fields": {
+      "nom": "Daloa Commerce",
+      "commune": 4
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 66,
+    "fields": {
+      "nom": "Korhogo Centre",
+      "commune": 5
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 67,
+    "fields": {
+      "nom": "Korhogo Nangolo",
+      "commune": 5
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 68,
+    "fields": {
+      "nom": "Korhogo M'Pé",
+      "commune": 5
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 69,
+    "fields": {
+      "nom": "Korhogo Tchologo",
+      "commune": 5
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 70,
+    "fields": {
+      "nom": "San-Pédro Centre",
+      "commune": 6
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 71,
+    "fields": {
+      "nom": "San-Pédro Port",
+      "commune": 6
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 72,
+    "fields": {
+      "nom": "San-Pédro Aviation",
+      "commune": 6
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 73,
+    "fields": {
+      "nom": "San-Pédro Belle-Ville",
+      "commune": 6
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 74,
+    "fields": {
+      "nom": "Man Centre",
+      "commune": 7
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 75,
+    "fields": {
+      "nom": "Man Gare",
+      "commune": 7
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 76,
+    "fields": {
+      "nom": "Man Quartier Militaire",
+      "commune": 7
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 77,
+    "fields": {
+      "nom": "Gagnoa Centre",
+      "commune": 8
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 78,
+    "fields": {
+      "nom": "Gagnoa Belleville",
+      "commune": 8
+    }
+  },
+  {
+    "model": "foncier.quartier",
+    "pk": 79,
+    "fields": {
+      "nom": "Gagnoa N'Gattakro",
+      "commune": 8
+    }
+  }
+]

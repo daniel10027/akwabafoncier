@@ -1,0 +1,832 @@
+{% extends 'base_dashboard.html' %}
+{% block title %}Carte Interactive{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<style>
+body { overflow: hidden; }
+.app-layout { height: calc(100vh - 68px); }
+.main-content { padding: 0; overflow: hidden; height: calc(100vh - 68px); }
+
+#map { width: 100%; height: 100%; z-index: 1; }
+
+.map-top-bar {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  right: 1rem;
+  z-index: 500;
+  display: flex;
+  gap: 0.75rem;
+  pointer-events: none;
+  flex-wrap: wrap;
+}
+
+.map-search-box {
+  flex: 1;
+  max-width: 420px;
+  background: white;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  padding: 0.875rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  pointer-events: all;
+}
+
+.map-search-box input {
+  border: none;
+  outline: none;
+  flex: 1;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--gray-800);
+}
+
+.map-filter-box {
+  background: white;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  padding: 0.625rem 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  pointer-events: all;
+}
+
+.map-filter-box select {
+  border: none;
+  outline: none;
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  color: var(--gray-700);
+  background: transparent;
+  cursor: pointer;
+}
+
+/* Terrain Info Panel */
+.terrain-panel {
+  position: absolute;
+  top: 5rem;
+  left: 1rem;
+  z-index: 500;
+  background: white;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  width: 320px;
+  max-height: calc(100vh - 130px);
+  overflow-y: auto;
+  display: none;
+  border-top: 4px solid var(--orange);
+}
+
+.terrain-panel.visible { display: block; }
+
+.tp-header {
+  padding: 1.25rem 1.25rem 0.75rem;
+  border-bottom: 1px solid var(--gray-100);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.tp-body { padding: 1rem 1.25rem; }
+.tp-field { margin-bottom: 0.875rem; }
+.tp-label { font-size: 0.6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gray-400); margin-bottom: 0.25rem; }
+.tp-value { font-size: 0.9rem; font-weight: 500; color: var(--gray-800); }
+.tp-alert { background: #FEE2E2; border: 1px solid #FCA5A5; border-radius: var(--radius-sm); padding: 0.75rem; margin-bottom: 1rem; display: flex; gap: 0.5rem; align-items: flex-start; font-size: 0.8125rem; color: #DC2626; }
+
+/* Legend */
+.map-legend-panel {
+  position: absolute;
+  bottom: 2rem;
+  right: 1rem;
+  z-index: 500;
+  background: white;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1rem 1.25rem;
+  min-width: 190px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  margin-bottom: 0.5rem;
+  color: var(--gray-700);
+}
+
+.legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+/* Layer Controls */
+.map-layers-panel {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 500;
+  background: white;
+  border-radius: 100px;
+  box-shadow: var(--shadow-lg);
+  padding: 0.5rem;
+  display: flex;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 90%;
+}
+
+.layer-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 100px;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--gray-600);
+  background: transparent;
+  transition: all 0.2s;
+}
+
+.layer-btn.active { background: var(--orange); color: white; }
+.layer-btn:hover { background: var(--gray-100); }
+
+/* Stats bar */
+.map-stats-bar {
+  position: absolute;
+  top: 5.25rem;
+  right: 1rem;
+  z-index: 500;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.map-stat-chip {
+  background: white;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 0.625rem 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+}
+
+.chip-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.875rem;
+}
+
+.divider {
+  height: 1px;
+  background: var(--gray-200);
+  margin: 1rem 0;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.badge-libre { background: #22c55e20; color: #22c55e; }
+.badge-titre_foncier { background: #3b82f620; color: #3b82f6; }
+.badge-acd { background: #f59e0b20; color: #f59e0b; }
+.badge-litige { background: #ef444420; color: #ef4444; }
+.badge-reserve_etat { background: #8b5cf620; color: #8b5cf6; }
+.badge-lotissement { background: #06b6d420; color: #06b6d4; }
+.badge-vendu { background: #6b728020; color: #6b7280; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div style="position:relative;height:calc(100vh - 68px);">
+  <!-- MAP -->
+  <div id="map"></div>
+
+  <!-- TOP BAR -->
+  <div class="map-top-bar">
+    <div class="map-search-box">
+      <span style="color:var(--gray-400);">🔍</span>
+      <input type="text" id="mapSearch" placeholder="Rechercher une parcelle, commune...">
+      <button onclick="searchTerrain()" class="btn btn-primary btn-sm">Chercher</button>
+    </div>
+    <div class="map-filter-box">
+      <span style="font-size:0.8125rem;color:var(--gray-500);">Statut:</span>
+      <select id="filterStatut" onchange="filterTerrains()">
+        <option value="">Tous</option>
+        <option value="libre">Libre</option>
+        <option value="titre_foncier">Titre Foncier</option>
+        <option value="acd">ACD</option>
+        <option value="litige">En litige</option>
+        <option value="reserve_etat">Réservé État</option>
+        <option value="lotissement">Lotissement</option>
+        <option value="vendu">Vendu</option>
+      </select>
+    </div>
+    <div class="map-filter-box">
+      <span style="font-size:0.8125rem;color:var(--gray-500);">Commune:</span>
+      <select id="filterCommune" onchange="filterTerrains()">
+        <option value="">Toutes</option>
+      </select>
+    </div>
+    <button onclick="exportVisible()" class="btn btn-secondary btn-sm" style="box-shadow:var(--shadow);">📤 Exporter</button>
+  </div>
+
+  <!-- TERRAIN PANEL -->
+  <div class="terrain-panel" id="terrainPanel">
+    <div class="tp-header">
+      <div>
+        <div style="font-size:0.75rem;color:var(--gray-400);margin-bottom:0.25rem;">Parcelle sélectionnée</div>
+        <div style="font-weight:700;font-size:1rem;" id="tp-ref">—</div>
+      </div>
+      <button onclick="closePanel()" style="background:var(--gray-100);border:none;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:1rem;">×</button>
+    </div>
+    <div class="tp-body">
+      <div id="tp-alert-box"></div>
+      <div class="grid-2">
+        <div class="tp-field">
+          <div class="tp-label">Statut</div>
+          <div id="tp-statut"></div>
+        </div>
+        <div class="tp-field">
+          <div class="tp-label">Superficie</div>
+          <div class="tp-value" id="tp-superficie">—</div>
+        </div>
+        <div class="tp-field">
+          <div class="tp-label">Commune</div>
+          <div class="tp-value" id="tp-commune">—</div>
+        </div>
+        <div class="tp-field">
+          <div class="tp-label">Zone</div>
+          <div class="tp-value" id="tp-zone">—</div>
+        </div>
+      </div>
+      <div class="tp-field">
+        <div class="tp-label">Adresse</div>
+        <div class="tp-value" id="tp-adresse">—</div>
+      </div>
+      <div class="tp-field">
+        <div class="tp-label">Propriétaire</div>
+        <div class="tp-value" id="tp-proprietaire">—</div>
+      </div>
+      <div class="tp-field">
+        <div class="tp-label">Valeur estimée</div>
+        <div class="tp-value" id="tp-valeur">—</div>
+      </div>
+      <div class="divider"></div>
+      <div id="tp-terrain-id" style="display:none;"></div>
+      <div style="display:flex;flex-direction:column;gap:0.5rem;">
+        <a id="tp-link" href="#" class="btn btn-primary w-full">📄 Voir fiche complète</a>
+        <button onclick="verifierTerrain()" class="btn btn-outline w-full">🔍 Rapport de vérification</button>
+        <button onclick="signalerAlerte()" class="btn btn-ghost w-full" style="color:var(--red);">🚨 Signaler un problème</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS CHIPS -->
+  <div class="map-stats-bar" id="statsBar">
+    <div class="map-stat-chip">
+      <div class="chip-dot" style="background:var(--green);"></div>
+      <span id="stat-libre">0</span> Libres
+    </div>
+    <div class="map-stat-chip">
+      <div class="chip-dot" style="background:var(--blue);"></div>
+      <span id="stat-titre">0</span> Titrés
+    </div>
+    <div class="map-stat-chip">
+      <div class="chip-dot" style="background:var(--yellow);"></div>
+      <span id="stat-acd">0</span> ACD
+    </div>
+    <div class="map-stat-chip">
+      <div class="chip-dot" style="background:var(--red);"></div>
+      <span id="stat-litige">0</span> Litiges
+    </div>
+  </div>
+
+  <!-- LEGEND -->
+  <div class="map-legend-panel">
+    <div style="font-size:0.6875rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--gray-400);margin-bottom:0.75rem;">Légende</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#22c55e;"></div> Libre / Disponible</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#3b82f6;"></div> Titre Foncier</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#f59e0b;"></div> ACD en cours</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#ef4444;"></div> En Litige</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#8b5cf6;"></div> Réservé État</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#06b6d4;"></div> Lotissement</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#6b7280;"></div> Vendu</div>
+    <div style="margin-top:0.75rem;padding-top:0.75rem;border-top:1px solid var(--gray-100);">
+      <div class="legend-item"><span style="font-size:0.875rem;">⚠️</span> Alerte active</div>
+    </div>
+  </div>
+
+  <!-- LAYER CONTROLS -->
+  <div class="map-layers-panel">
+    <button class="layer-btn active" onclick="setLayer(this,'street')">🗺️ Plan</button>
+    <button class="layer-btn" onclick="setLayer(this,'satellite')">🛰️ Satellite</button>
+    <button class="layer-btn" onclick="setLayer(this,'topo')">🏔️ Topographie</button>
+    <button class="layer-btn" onclick="toggleHeatmap(this)">🔥 Densité</button>
+    <button class="layer-btn active" onclick="togglePolygons(this)">⬛ Parcelles</button>
+    <button class="layer-btn" onclick="centerCI()">🇨🇮 Côte d'Ivoire</button>
+    <button class="layer-btn" id="measure-btn" onclick="toggleMeasure()">📏 Mesurer</button>
+    <button class="layer-btn" onclick="toggleFullscreen()">⛶ Plein écran</button>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+// ======= INIT MAP =======
+const map = L.map('map', {
+  center: [7.539989, -5.547080],
+  zoom: 6,
+  zoomControl: false
+});
+
+// Add zoom control top right
+L.control.zoom({ position: 'topright' }).addTo(map);
+
+// Base layers
+const layers = {
+  street: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors',
+    maxZoom: 19
+  }),
+  satellite: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    attribution: 'Esri',
+    maxZoom: 19
+  }),
+  topo: L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenTopoMap',
+    maxZoom: 17
+  })
+};
+
+layers.street.addTo(map);
+let currentLayer = 'street';
+
+// Scale control
+L.control.scale({ position: 'bottomleft', imperial: false }).addTo(map);
+
+// ======= DATA =======
+let allTerrains = [];
+let markers = [];
+let markerGroup = L.layerGroup().addTo(map);
+let selectedTerrainId = null;
+
+// Color map
+const colorMap = {
+  libre: '#22c55e',
+  titre_foncier: '#3b82f6',
+  acd: '#f59e0b',
+  litige: '#ef4444',
+  reserve_etat: '#8b5cf6',
+  lotissement: '#06b6d4',
+  vendu: '#6b7280'
+};
+
+function createIcon(color, hasAlerte) {
+  const size = hasAlerte ? 18 : 14;
+  const border = hasAlerte ? '3px solid #ef4444' : '2px solid white';
+  return L.divIcon({
+    className: '',
+    html: `<div style="width:${size}px;height:${size}px;background:${color};border-radius:50%;border:${border};box-shadow:0 2px 8px rgba(0,0,0,0.25);${hasAlerte ? 'animation:pulse 1.5s infinite;' : ''}"></div>`,
+    iconSize: [size, size],
+    iconAnchor: [size/2, size/2]
+  });
+}
+
+// Add pulse animation
+const style = document.createElement('style');
+style.textContent = `@keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.5); } 50% { box-shadow: 0 0 0 8px rgba(239,68,68,0); } }`;
+document.head.appendChild(style);
+
+async function loadTerrains(params = '') {
+  try {
+    const resp = await fetch('/dashboard/api/terrains/' + params);
+    const data = await resp.json();
+    allTerrains = data.terrains;
+    renderMarkers(allTerrains);
+    updateStats(allTerrains);
+  } catch(e) {
+    console.error('Erreur chargement terrains', e);
+    loadDemoData();
+  }
+}
+
+function loadDemoData() {
+  const statuts = ['libre', 'titre_foncier', 'acd', 'litige', 'reserve_etat', 'lotissement', 'vendu'];
+  const communes = ['Cocody', 'Plateau', 'Yopougon', 'Abobo', 'Koumassi', 'Marcory', 'Adjamé', 'Bingerville', 'Anyama'];
+  const demo = [];
+  for(let i = 0; i < 120; i++) {
+    const statut = statuts[Math.floor(Math.random() * statuts.length)];
+    const commune = communes[Math.floor(Math.random() * communes.length)];
+    demo.push({
+      id: i+1,
+      reference: `CI-ABJ-${commune.toUpperCase().slice(0,3)}-${String(i+1).padStart(5,'0')}`,
+      lat: 5.30 + (Math.random() - 0.5) * 0.4,
+      lng: -4.00 + (Math.random() - 0.5) * 0.4,
+      statut: statut,
+      statut_label: {'libre':'Libre','titre_foncier':'Titre Foncier','acd':'ACD en cours','litige':'En litige','reserve_etat':'Réservé État','lotissement':'Lotissement','vendu':'Vendu'}[statut],
+      couleur: colorMap[statut],
+      superficie: Math.floor(Math.random() * 1500 + 100),
+      commune: commune,
+      adresse: `Quartier ${Math.floor(Math.random()*15+1)}, ${commune}`,
+      alerte: Math.random() > 0.85,
+      zone_usage: ['residentiel', 'commercial', 'mixte'][Math.floor(Math.random() * 3)],
+      valeur_estimee: Math.floor(Math.random() * 50000000 + 10000000)
+    });
+  }
+  allTerrains = demo;
+  renderMarkers(demo);
+  updateStats(demo);
+
+  const villes = [
+    {nom:'Abidjan', lat:5.3484, lng:-4.0267},
+    {nom:'Bouaké', lat:7.6892, lng:-5.0297},
+    {nom:'Daloa', lat:6.8742, lng:-6.4502},
+    {nom:'San-Pédro', lat:4.7485, lng:-6.6363},
+    {nom:'Korhogo', lat:9.4580, lng:-5.6291},
+    {nom:'Yamoussoukro', lat:6.8276, lng:-5.2893},
+    {nom:'Man', lat:7.4000, lng:-7.5500},
+    {nom:'Gagnoa', lat:6.1300, lng:-5.9300},
+  ];
+  villes.forEach(v => {
+    L.marker([v.lat, v.lng], {
+      icon: L.divIcon({
+        className: '',
+        html: `<div style="background:rgba(0,0,0,0.7);color:white;padding:3px 8px;border-radius:4px;font-size:11px;font-weight:600;white-space:nowrap;">${v.nom}</div>`,
+        iconAnchor: [30, 10]
+      })
+    }).addTo(map);
+  });
+}
+
+let polygonGroup = L.layerGroup().addTo(map);
+let showPolygons = true;
+
+function renderMarkers(terrains) {
+  markerGroup.clearLayers();
+  polygonGroup.clearLayers();
+  markers = [];
+  terrains.forEach(t => {
+    if (!t.lat || !t.lng) return;
+
+    const m = L.marker([t.lat, t.lng], {
+      icon: createIcon(t.couleur || colorMap[t.statut], t.alerte)
+    });
+    m.on('click', () => showTerrainPanel(t));
+    m.on('mouseover', function() {
+      this.bindTooltip(`<b>${t.reference}</b><br>${t.statut_label}<br>${t.superficie ? t.superficie.toLocaleString() + ' m²' : ''}`, {direction:'top'}).openTooltip();
+    });
+    markerGroup.addLayer(m);
+    markers.push({ marker: m, data: t });
+  });
+}
+
+function updateStats(terrains) {
+  const counts = { libre:0, titre_foncier:0, acd:0, litige:0 };
+  terrains.forEach(t => {
+    if (counts.hasOwnProperty(t.statut)) counts[t.statut]++;
+  });
+  document.getElementById('stat-libre').textContent = counts.libre;
+  document.getElementById('stat-titre').textContent = counts.titre_foncier;
+  document.getElementById('stat-acd').textContent = counts.acd;
+  document.getElementById('stat-litige').textContent = counts.litige;
+}
+
+function showTerrainPanel(t) {
+  selectedTerrainId = t.id;
+  document.getElementById('tp-ref').textContent = t.reference;
+  document.getElementById('tp-superficie').textContent = t.superficie ? t.superficie.toLocaleString() + ' m²' : '—';
+  document.getElementById('tp-commune').textContent = t.commune || '—';
+  document.getElementById('tp-adresse').textContent = t.adresse || '—';
+  document.getElementById('tp-zone').textContent = t.zone_usage || '—';
+  document.getElementById('tp-valeur').textContent = t.valeur_estimee ? Number(t.valeur_estimee).toLocaleString() + ' FCFA' : 'Non renseignée';
+  document.getElementById('tp-terrain-id').textContent = t.id;
+
+  const badgeClass = `badge-${t.statut}`;
+  document.getElementById('tp-statut').innerHTML = `<span class="badge ${badgeClass}">${t.statut_label}</span>`;
+
+  const alertBox = document.getElementById('tp-alert-box');
+  if (t.alerte) {
+    alertBox.innerHTML = `<div class="tp-alert">⚠️ <span>Alerte active sur ce terrain — vérification recommandée avant toute transaction.</span></div>`;
+  } else {
+    alertBox.innerHTML = '';
+  }
+
+  document.getElementById('tp-link').href = `/dashboard/terrains/${t.id}/`;
+
+  fetch(`/dashboard/api/terrains/${t.id}/`)
+    .then(r => r.json())
+    .then(d => {
+      document.getElementById('tp-proprietaire').textContent = d.proprietaire || '—';
+      if (d.valeur_estimee) document.getElementById('tp-valeur').textContent = Number(d.valeur_estimee).toLocaleString() + ' FCFA';
+    }).catch(() => {
+      document.getElementById('tp-proprietaire').textContent = 'Non communiqué';
+    });
+
+  document.getElementById('terrainPanel').classList.add('visible');
+  map.panTo([t.lat, t.lng], { animate: true });
+}
+
+function closePanel() {
+  document.getElementById('terrainPanel').classList.remove('visible');
+  selectedTerrainId = null;
+}
+
+// ======= FILTERS =======
+async function filterTerrains() {
+  const statut = document.getElementById('filterStatut').value;
+  const commune = document.getElementById('filterCommune').value;
+  let params = '?';
+  if (statut) params += `statut=${statut}&`;
+  if (commune) params += `commune=${commune}&`;
+  await loadTerrains(params);
+}
+
+function searchTerrain() {
+  const q = document.getElementById('mapSearch').value.trim().toUpperCase();
+  if (!q) return;
+  const found = allTerrains.find(t => t.reference && t.reference.toUpperCase().includes(q));
+  if (found) {
+    map.setView([found.lat, found.lng], 16, { animate: true });
+    showTerrainPanel(found);
+  } else {
+    alert('Aucun terrain trouvé pour "' + q + '".\nVérifiez la référence cadastrale.');
+  }
+}
+
+document.getElementById('mapSearch').addEventListener('keydown', e => {
+  if (e.key === 'Enter') searchTerrain();
+});
+
+// ======= LAYER CONTROLS =======
+function setLayer(btn, layerName) {
+  document.querySelectorAll('.layer-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  map.removeLayer(layers[currentLayer]);
+  layers[layerName].addTo(map);
+  currentLayer = layerName;
+}
+
+// CORRECTION: Fonction centerCI correctement définie
+function centerCI() {
+  map.setView([7.539989, -5.547080], 6.5, { animate: true, duration: 0.5 });
+
+  // Afficher une notification visuelle
+  const toast = document.createElement('div');
+  toast.innerHTML = '🇨🇮 Centrage sur la Côte d\'Ivoire';
+  toast.style.cssText = `
+    position: fixed;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--orange);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    z-index: 9999;
+    animation: fadeOut 2s ease forwards;
+    pointer-events: none;
+  `;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 2000);
+}
+
+// Ajouter l'animation fadeOut
+const fadeStyle = document.createElement('style');
+fadeStyle.textContent = `
+  @keyframes fadeOut {
+    0% { opacity: 1; transform: translateX(-50%) translateY(0); }
+    70% { opacity: 1; }
+    100% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+  }
+`;
+document.head.appendChild(fadeStyle);
+
+let heatmapActive = false;
+function toggleHeatmap(btn) {
+  heatmapActive = !heatmapActive;
+  btn.classList.toggle('active', heatmapActive);
+  markerGroup.clearLayers();
+  if (heatmapActive) {
+    allTerrains.forEach(t => {
+      if (!t.lat || !t.lng) return;
+      L.circleMarker([t.lat, t.lng], {
+        radius: 12,
+        fillColor: colorMap[t.statut] || '#6b7280',
+        color: 'transparent',
+        fillOpacity: 0.4,
+        weight: 0
+      }).on('click', () => showTerrainPanel(t)).addTo(markerGroup);
+    });
+  } else {
+    renderMarkers(allTerrains);
+  }
+}
+
+function togglePolygons(btn) {
+  showPolygons = !showPolygons;
+  btn.classList.toggle('active', showPolygons);
+  if (!showPolygons) {
+    polygonGroup.clearLayers();
+  } else {
+    renderMarkers(allTerrains);
+  }
+}
+
+// ======= ACTIONS =======
+function verifierTerrain() {
+  if (selectedTerrainId) {
+    window.location.href = `/dashboard/terrains/verification/?id=${selectedTerrainId}`;
+  }
+}
+
+function signalerAlerte() {
+  if (selectedTerrainId) {
+    window.location.href = `/dashboard/reclamations/nouvelle/?terrain=${selectedTerrainId}`;
+  }
+}
+
+function exportVisible() {
+  const visible = allTerrains.map(t => ({
+    reference: t.reference,
+    commune: t.commune,
+    statut: t.statut_label,
+    superficie: t.superficie,
+    lat: t.lat,
+    lng: t.lng
+  }));
+  const csv = ['Référence,Commune,Statut,Superficie (m²),Latitude,Longitude',
+    ...visible.map(t => `"${t.reference}",${t.commune},${t.statut},${t.superficie},${t.lat},${t.lng}`)
+  ].join('\n');
+  const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `terrains_akwabafoncier_${new Date().toISOString().slice(0,19)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ======= LOAD COMMUNES FOR FILTER =======
+async function loadCommunes() {
+  try {
+    const resp = await fetch('/dashboard/api/communes/');
+    const data = await resp.json();
+    const sel = document.getElementById('filterCommune');
+    if (data.communes && data.communes.length) {
+      data.communes.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.id;
+        opt.textContent = c.nom;
+        sel.appendChild(opt);
+      });
+    } else {
+      // Fallback communes
+      const fallbackCommunes = ['Abidjan', 'Cocody', 'Plateau', 'Yopougon', 'Abobo', 'Koumassi', 'Marcory', 'Adjamé', 'Bingerville', 'Anyama'];
+      fallbackCommunes.forEach((c, idx) => {
+        const opt = document.createElement('option');
+        opt.value = idx + 1;
+        opt.textContent = c;
+        sel.appendChild(opt);
+      });
+    }
+  } catch(e) {
+    console.error('Erreur chargement communes', e);
+  }
+}
+
+// ======= MEASURE DISTANCE =======
+let measureMode = false;
+let measurePoints = [];
+let measureLines = [];
+let measureMarkers = [];
+
+function toggleMeasure() {
+  measureMode = !measureMode;
+  const btn = document.getElementById('measure-btn');
+  if (btn) btn.classList.toggle('active', measureMode);
+  map.getContainer().style.cursor = measureMode ? 'crosshair' : '';
+  if (!measureMode) {
+    clearMeasure();
+  } else {
+    alert('Mode mesure activé. Cliquez sur la carte pour mesurer des distances. Double-cliquez pour terminer.');
+  }
+}
+
+function clearMeasure() {
+  measurePoints = [];
+  measureLines.forEach(l => map.removeLayer(l));
+  measureMarkers.forEach(m => map.removeLayer(m));
+  measureLines = [];
+  measureMarkers = [];
+}
+
+map.on('click', function(e) {
+  if (!measureMode) return;
+  measurePoints.push(e.latlng);
+  const m = L.circleMarker(e.latlng, {radius: 5, color: '#F77F00', fillColor: '#F77F00', fillOpacity: 1}).addTo(map);
+  measureMarkers.push(m);
+  if (measurePoints.length >= 2) {
+    const p1 = measurePoints[measurePoints.length-2];
+    const p2 = measurePoints[measurePoints.length-1];
+    const line = L.polyline([p1, p2], {color: '#F77F00', weight: 2, dashArray: '5,5'}).addTo(map);
+    measureLines.push(line);
+    const dist = map.distance(p1, p2);
+    const label = dist < 1000 ? dist.toFixed(0) + ' m' : (dist/1000).toFixed(2) + ' km';
+    L.tooltip({permanent: true, direction: 'top'})
+      .setLatLng([(p1.lat+p2.lat)/2, (p1.lng+p2.lng)/2])
+      .setContent(label)
+      .addTo(map);
+  }
+});
+
+map.on('dblclick', function(e) {
+  if (measureMode) {
+    toggleMeasure();
+  }
+});
+
+// ======= GEOCODE SEARCH =======
+async function geocodeSearch(query) {
+  if (!query || query.length < 3) return;
+  try {
+    const r = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query + ', Côte d\'Ivoire')}&format=json&limit=5`);
+    const data = await r.json();
+    if (data.length > 0) {
+      const first = data[0];
+      map.setView([parseFloat(first.lat), parseFloat(first.lon)], 14, {animate: true});
+      const tempMarker = L.marker([parseFloat(first.lat), parseFloat(first.lon)], {
+        icon: L.divIcon({
+          className: '',
+          html: '<div style="background:var(--orange);color:white;padding:4px 8px;border-radius:4px;font-size:11px;font-weight:600;white-space:nowrap;">📍 ' + (first.display_name.split(',')[0]) + '</div>',
+          iconAnchor: [40, 10]
+        })
+      }).addTo(map);
+      setTimeout(() => map.removeLayer(tempMarker), 3000);
+    } else {
+      alert('Aucun résultat trouvé pour "' + query + '"');
+    }
+  } catch(e) {
+    console.error('Erreur geocoding', e);
+  }
+}
+
+// Redéfinir searchTerrain
+window.searchTerrain = function() {
+  const q = document.getElementById('mapSearch').value.trim();
+  if (!q) return;
+  const found = allTerrains.find(t => t.reference && t.reference.toUpperCase().includes(q.toUpperCase()));
+  if (found) {
+    map.setView([found.lat, found.lng], 16, {animate: true});
+    showTerrainPanel(found);
+  } else if (q.length > 2) {
+    geocodeSearch(q);
+  } else {
+    alert('Veuillez entrer une référence cadastrale valide (ex: CI-ABJ-COC-00001)');
+  }
+};
+
+// ======= FULLSCREEN =======
+function toggleFullscreen() {
+  const el = document.documentElement;
+  if (!document.fullscreenElement) {
+    el.requestFullscreen().catch(err => {
+      console.error(`Erreur plein écran: ${err.message}`);
+    });
+  } else {
+    document.exitFullscreen();
+  }
+}
+
+// ======= INIT =======
+loadCommunes();
+loadTerrains();
+
+// Centrer sur Abidjan après 1 seconde
+setTimeout(() => {
+  map.setView([5.3484, -4.0267], 12, { animate: true });
+}, 800);
+</script>
+{% endblock %}

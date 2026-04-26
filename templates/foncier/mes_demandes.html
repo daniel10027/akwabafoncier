@@ -1,0 +1,29 @@
+{% extends 'base_dashboard.html' %}
+{% block title %}Mes demandes{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div><h1 class="page-title">📋 Mes demandes</h1><p class="page-subtitle">{{ demandes|length }} demande(s)</p></div>
+  <a href="/dashboard/demandes/nouvelle/" class="btn btn-primary">+ Nouvelle demande</a>
+</div>
+{% if demandes %}
+<div class="table-wrapper">
+  <table class="table">
+    <thead><tr><th>Référence</th><th>Type</th><th>Terrain</th><th>Date</th><th>Statut</th><th>Action</th></tr></thead>
+    <tbody>
+      {% for d in demandes %}
+      <tr>
+        <td><span style="font-weight:600;font-family:monospace;">{{ d.reference }}</span></td>
+        <td>{{ d.get_type_demande_display }}</td>
+        <td>{{ d.terrain.reference_cadastrale }}</td>
+        <td style="font-size:0.8125rem;color:var(--gray-500);">{{ d.date_soumission|date:"d/m/Y" }}</td>
+        <td><span class="badge badge-{% if d.statut == 'approuvee' %}success{% elif d.statut == 'rejetee' %}danger{% elif d.statut == 'soumise' %}info{% else %}warning{% endif %}">{{ d.get_statut_display }}</span></td>
+        <td><a href="/dashboard/demandes/{{ d.pk }}/" class="btn btn-ghost btn-sm">Détails →</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-title">Aucune demande</div><a href="/dashboard/demandes/nouvelle/" class="btn btn-primary" style="margin-top:1rem;">Faire une demande</a></div>
+{% endif %}
+{% endblock %}

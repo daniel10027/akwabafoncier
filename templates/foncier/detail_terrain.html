@@ -1,0 +1,135 @@
+{% extends 'base_dashboard.html' %}
+{% block title %}{{ terrain.reference_cadastrale }}{% endblock %}
+{% block extra_head %}<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">{{ terrain.reference_cadastrale }}</h1>
+    <div style="display:flex;align-items:center;gap:0.5rem;margin-top:0.375rem;">
+      <span class="badge badge-{{ terrain.statut }}">{{ terrain.get_statut_display }}</span>
+      {% if terrain.alerte_active %}<span class="badge badge-danger">⚠️ Alerte active</span>{% endif %}
+    </div>
+  </div>
+  <div style="display:flex;gap:0.75rem;">
+    {% if user.is_admin %}<a href="/dashboard/admin-panel/terrains/{{ terrain.pk }}/modifier/" class="btn btn-primary">✏️ Modifier</a>{% endif %}
+    <a href="/dashboard/terrains/" class="btn btn-ghost">← Retour</a>
+  </div>
+</div>
+
+{% if alertes %}
+<div class="alert alert-danger">🚨 <strong>{{ alertes|length }} alerte(s) active(s)</strong> sur ce terrain — vérification recommandée avant toute transaction.</div>
+{% endif %}
+
+<div class="grid-2" style="gap:1.5rem;margin-bottom:1.5rem;">
+  <div class="card">
+    <div class="card-header"><span class="card-title">📋 Fiche du terrain</span></div>
+    <div style="display:flex;flex-direction:column;gap:0.75rem;font-size:0.875rem;">
+      <div style="display:flex;justify-content:space-between;padding:0.625rem;background:var(--gray-50);border-radius:var(--radius-sm);"><span style="color:var(--gray-500);">Référence</span><span style="font-weight:600;font-family:monospace;">{{ terrain.reference_cadastrale }}</span></div>
+      <div style="display:flex;justify-content:space-between;padding:0.625rem;background:var(--gray-50);border-radius:var(--radius-sm);"><span style="color:var(--gray-500);">Commune</span><span>{{ terrain.commune.nom|default:"—" }}</span></div>
+      <div style="display:flex;justify-content:space-between;padding:0.625rem;background:var(--gray-50);border-radius:var(--radius-sm);"><span style="color:var(--gray-500);">Superficie</span><span style="font-weight:600;">{{ terrain.superficie|floatformat:0 }} m²</span></div>
+      <div style="display:flex;justify-content:space-between;padding:0.625rem;background:var(--gray-50);border-radius:var(--radius-sm);"><span style="color:var(--gray-500);">Zone d'usage</span><span>{{ terrain.get_zone_usage_display }}</span></div>
+      <div style="display:flex;justify-content:space-between;padding:0.625rem;background:var(--gray-50);border-radius:var(--radius-sm);"><span style="color:var(--gray-500);">Numéro de lot</span><span>{{ terrain.numero_lot|default:"—" }}</span></div>
+      <div style="display:flex;justify-content:space-between;padding:0.625rem;background:var(--gray-50);border-radius:var(--radius-sm);"><span style="color:var(--gray-500);">Propriétaire officiel</span><span style="font-weight:600;">{% if terrain.proprietaire_actuel %}{{ terrain.proprietaire_actuel.get_full_name }}{% else %}Non renseigné{% endif %}</span></div>
+      <div style="display:flex;justify-content:space-between;padding:0.625rem;background:var(--gray-50);border-radius:var(--radius-sm);"><span style="color:var(--gray-500);">Valeur estimée</span><span>{% if terrain.valeur_estimee %}{{ terrain.valeur_estimee|floatformat:0 }} FCFA{% else %}—{% endif %}</span></div>
+      <div style="padding:0.625rem;background:var(--gray-50);border-radius:var(--radius-sm);"><div style="color:var(--gray-500);margin-bottom:0.25rem;">Adresse</div><div>{{ terrain.adresse_complete|default:"—" }}</div></div>
+    </div>
+    <div class="divider"></div>
+    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+      <a href="/dashboard/terrains/{{ terrain.pk }}/rapport/" class="btn btn-success btn-sm">📊 Rapport PDF</a>
+        <a href="/dashboard/demandes/nouvelle/?terrain={{ terrain.pk }}" class="btn btn-primary btn-sm">📝 Faire une demande</a>
+      <a href="/dashboard/reclamations/nouvelle/?terrain={{ terrain.pk }}" class="btn btn-ghost btn-sm" style="color:var(--red);">🚨 Réclamation</a>
+    </div>
+  </div>
+  <div>
+    <div class="card" style="margin-bottom:1rem;">
+      <div class="card-header"><span class="card-title">📍 Localisation</span></div>
+      <div id="detail-map" style="height:220px;border-radius:var(--radius);overflow:hidden;"></div>
+      <div style="font-size:0.8125rem;color:var(--gray-500);margin-top:0.625rem;">{{ terrain.latitude|floatformat:6 }}, {{ terrain.longitude|floatformat:6 }}</div>
+    </div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">📂 Documents ({{ documents|length }})</span></div>
+      {% if documents %}
+        {% for doc in documents %}
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:0.625rem 0;border-bottom:1px solid var(--gray-100);">
+          <div><div style="font-weight:600;font-size:0.8125rem;">{{ doc.titre }}</div><div style="font-size:0.75rem;color:var(--gray-400);">{{ doc.get_type_document_display }} — {{ doc.date_document|date:"d/m/Y" }}</div></div>
+          {% if doc.est_officiel %}<span class="badge badge-success">Officiel</span>{% endif %}
+        </div>
+        {% endfor %}
+      {% else %}
+        <p style="font-size:0.875rem;color:var(--gray-400);">Aucun document associé.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- HISTORIQUE -->
+<div class="card">
+  <div class="card-header"><span class="card-title">📅 Historique administratif</span></div>
+  {% if historique %}
+  <div style="position:relative;padding-left:1.5rem;">
+    {% for h in historique %}
+    <div style="position:relative;padding:0.875rem 0;border-bottom:{% if not forloop.last %}1px solid var(--gray-100){% else %}none{% endif %};">
+      <div style="position:absolute;left:-1.5rem;top:1.25rem;width:10px;height:10px;background:var(--orange);border-radius:50%;"></div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+        <div>
+          <div style="font-weight:600;font-size:0.875rem;">{{ h.action }}</div>
+          <div style="font-size:0.8125rem;color:var(--gray-500);">{{ h.description }}</div>
+        </div>
+        <div style="font-size:0.75rem;color:var(--gray-400);text-align:right;flex-shrink:0;margin-left:1rem;">
+          {{ h.date_action|date:"d/m/Y H:i" }}<br>
+          {% if h.effectue_par %}<span style="color:var(--orange);">{{ h.effectue_par.get_full_name|default:h.effectue_par.username }}</span>{% endif %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+    <div class="empty-state" style="padding:2rem;"><div class="empty-icon">📅</div><div class="empty-title">Aucun historique disponible</div></div>
+  {% endif %}
+</div>
+
+<!-- UPLOAD DOCUMENT -->
+<div class="card" style="margin-top:1.5rem;">
+  <div class="card-header"><span class="card-title">📎 Ajouter un document</span></div>
+  <form method="post" action="/dashboard/terrains/{{ terrain.pk }}/upload/" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="grid-2" style="gap:1rem;margin-bottom:1rem;">
+      <div class="form-group" style="margin-bottom:0;">
+        <label class="form-label">Type de document</label>
+        <select name="type_document" class="form-control">
+          <option value="titre_foncier">Titre Foncier</option>
+          <option value="acd">ACD</option>
+          <option value="plan_bornage">Plan de Bornage</option>
+          <option value="acte_vente">Acte de Vente</option>
+          <option value="permis_construire">Permis de Construire</option>
+          <option value="autre">Autre</option>
+        </select>
+      </div>
+      <div class="form-group" style="margin-bottom:0;">
+        <label class="form-label">Titre du document</label>
+        <input type="text" name="titre" class="form-control" placeholder="Ex: Titre Foncier N°4521" required>
+      </div>
+      <div class="form-group" style="margin-bottom:0;">
+        <label class="form-label">Date du document</label>
+        <input type="date" name="date_document" class="form-control">
+      </div>
+      <div class="form-group" style="margin-bottom:0;">
+        <label class="form-label">Fichier (PDF, image)</label>
+        <input type="file" name="fichier" class="form-control" accept=".pdf,.jpg,.jpeg,.png" required>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary btn-sm">📤 Uploader le document</button>
+  </form>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const m = L.map('detail-map').setView([{{ terrain.latitude }}, {{ terrain.longitude }}], 15);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(m);
+L.marker([{{ terrain.latitude }}, {{ terrain.longitude }}])
+  .addTo(m)
+  .bindPopup('<b>{{ terrain.reference_cadastrale }}</b><br>{{ terrain.get_statut_display }}')
+  .openPopup();
+</script>
+{% endblock %}

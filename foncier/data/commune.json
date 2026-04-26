@@ -1,0 +1,1102 @@
+[
+  {
+    "model": "foncier.commune",
+    "pk": 1,
+    "fields": {
+      "nom": "Abidjan",
+      "code": "CI-ABJ001",
+      "region": "Abidjan",
+      "latitude": 5.3599,
+      "longitude": -4.0083
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 2,
+    "fields": {
+      "nom": "Yamoussoukro",
+      "code": "CI-YAM001",
+      "region": "Yamoussoukro",
+      "latitude": 6.8276,
+      "longitude": -5.2893
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 3,
+    "fields": {
+      "nom": "Bouaké",
+      "code": "CI-BOU2001",
+      "region": "Vallée du Bandama",
+      "latitude": 7.6900,
+      "longitude": -5.0300
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 4,
+    "fields": {
+      "nom": "Daloa",
+      "code": "CI-DAL001",
+      "region": "Sassandra-Marahoué",
+      "latitude": 6.8800,
+      "longitude": -6.4500
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 5,
+    "fields": {
+      "nom": "Korhogo",
+      "code": "CI-KOR001",
+      "region": "Savanes",
+      "latitude": 9.4600,
+      "longitude": -5.6300
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 6,
+    "fields": {
+      "nom": "San-Pédro",
+      "code": "CI-SAN001",
+      "region": "Bas-Sassandra",
+      "latitude": 4.7500,
+      "longitude": -6.6400
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 7,
+    "fields": {
+      "nom": "Man",
+      "code": "CI-MAN001",
+      "region": "Montagnes",
+      "latitude": 7.4000,
+      "longitude": -7.5500
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 8,
+    "fields": {
+      "nom": "Gagnoa",
+      "code": "CI-GAG001",
+      "region": "Gôh-Djiboua",
+      "latitude": 6.1300,
+      "longitude": -5.9300
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 9,
+    "fields": {
+      "nom": "Divo",
+      "code": "CI-DIV001",
+      "region": "Gôh-Djiboua",
+      "latitude": 5.8400,
+      "longitude": -5.3600
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 10,
+    "fields": {
+      "nom": "Abengourou",
+      "code": "CI-ABE001",
+      "region": "Comoé",
+      "latitude": 6.7300,
+      "longitude": -3.4800
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 11,
+    "fields": {
+      "nom": "Agboville",
+      "code": "CI-AGB001",
+      "region": "Lagunes",
+      "latitude": 5.9300,
+      "longitude": -4.2200
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 12,
+    "fields": {
+      "nom": "Aboisso",
+      "code": "CI-ABO001",
+      "region": "Comoé",
+      "latitude": 5.4700,
+      "longitude": -3.2000
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 13,
+    "fields": {
+      "nom": "Adiaké",
+      "code": "CI-ADI001",
+      "region": "Comoé",
+      "latitude": 5.2900,
+      "longitude": -3.3000
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 14,
+    "fields": {
+      "nom": "Afféry",
+      "code": "CI-AFF001",
+      "region": "Lagunes",
+      "latitude": 5.5700,
+      "longitude": -4.1300
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 15,
+    "fields": {
+      "nom": "Akoupé",
+      "code": "CI-AKO001",
+      "region": "Lagunes",
+      "latitude": 5.9800,
+      "longitude": -4.2700
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 16,
+    "fields": {
+      "nom": "Alépé",
+      "code": "CI-ALE001",
+      "region": "Lagunes",
+      "latitude": 5.5000,
+      "longitude": -3.6600
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 17,
+    "fields": {
+      "nom": "Anyama",
+      "code": "CI-ANY001",
+      "region": "Abidjan",
+      "latitude": 5.5000,
+      "longitude": -4.0500
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 18,
+    "fields": {
+      "nom": "Bingerville",
+      "code": "CI-BIN001",
+      "region": "Abidjan",
+      "latitude": 5.3500,
+      "longitude": -3.8800
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 19,
+    "fields": {
+      "nom": "Bondoukou",
+      "code": "CI-BON001",
+      "region": "Zanzan",
+      "latitude": 8.0400,
+      "longitude": -2.8000
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 20,
+    "fields": {
+      "nom": "Bongouanou",
+      "code": "CI-BOG001",
+      "region": "Lacs",
+      "latitude": 6.6500,
+      "longitude": -4.2000
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 21,
+    "fields": {
+      "nom": "Botro",
+      "code": "CI-BOT001",
+      "region": "Vallée du Bandama",
+      "latitude": 7.8500,
+      "longitude": -5.2800
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 22,
+    "fields": {
+      "nom": "Boundiali",
+      "code": "CI-BOU001",
+      "region": "Savanes",
+      "latitude": 9.5200,
+      "longitude": -6.4800
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 23,
+    "fields": {
+      "nom": "Bouaflé",
+      "code": "CI-BOF001",
+      "region": "Sassandra-Marahoué",
+      "latitude": 6.9900,
+      "longitude": -5.7500
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 24,
+    "fields": {
+      "nom": "Bouna",
+      "code": "CI-BUN001",
+      "region": "Zanzan",
+      "latitude": 9.2700,
+      "longitude": -3.0000
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 25,
+    "fields": {
+      "nom": "Dabou",
+      "code": "CI-DAB001",
+      "region": "Lagunes",
+      "latitude": 5.3300,
+      "longitude": -4.3800
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 26,
+    "fields": {
+      "nom": "Danané",
+      "code": "CI-DAN001",
+      "region": "Montagnes",
+      "latitude": 7.2600,
+      "longitude": -8.1600
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 27,
+    "fields": {
+      "nom": "Daoukro",
+      "code": "CI-DAO001",
+      "region": "Lacs",
+      "latitude": 7.0700,
+      "longitude": -3.9500
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 28,
+    "fields": {
+      "nom": "Dimbokro",
+      "code": "CI-DIM001",
+      "region": "Lacs",
+      "latitude": 6.6500,
+      "longitude": -4.7000
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 29,
+    "fields": {
+      "nom": "Duékoué",
+      "code": "CI-DUE001",
+      "region": "Montagnes",
+      "latitude": 6.7400,
+      "longitude": -7.3500
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 30,
+    "fields": {
+      "nom": "Ferkessédougou",
+      "code": "CI-FER001",
+      "region": "Savanes",
+      "latitude": 9.6000,
+      "longitude": -5.2000
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 31,
+    "fields": {
+      "nom": "Gagnoa",
+      "code": "CI-GAG002",
+      "region": "Gôh-Djiboua",
+      "latitude": 6.1300,
+      "longitude": -5.9300
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 32,
+    "fields": {
+      "nom": "Grand-Bassam",
+      "code": "CI-GRA001",
+      "region": "Comoé",
+      "latitude": 5.2000,
+      "longitude": -3.7300
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 33,
+    "fields": {
+      "nom": "Guiglo",
+      "code": "CI-GUI001",
+      "region": "Montagnes",
+      "latitude": 6.5400,
+      "longitude": -7.4800
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 34,
+    "fields": {
+      "nom": "Issia",
+      "code": "CI-ISS001",
+      "region": "Sassandra-Marahoué",
+      "latitude": 6.4900,
+      "longitude": -6.5800
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 35,
+    "fields": {
+      "nom": "Katiola",
+      "code": "CI-KAT001",
+      "region": "Vallée du Bandama",
+      "latitude": 8.1400,
+      "longitude": -5.1000
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 36,
+    "fields": {
+      "nom": "Lakota",
+      "code": "CI-LAK001",
+      "region": "Gôh-Djiboua",
+      "latitude": 5.8500,
+      "longitude": -5.6800
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 37,
+    "fields": {
+      "nom": "Man",
+      "code": "CI-MAN002",
+      "region": "Montagnes",
+      "latitude": 7.4000,
+      "longitude": -7.5500
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 38,
+    "fields": {
+      "nom": "Mankono",
+      "code": "CI-M22AN001",
+      "region": "Woroba",
+      "latitude": 8.0600,
+      "longitude": -6.1000
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 39,
+    "fields": {
+      "nom": "Odienné",
+      "code": "CI-ODI001",
+      "region": "Denguélé",
+      "latitude": 9.5100,
+      "longitude": -7.5600
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 40,
+    "fields": {
+      "nom": "Oumé",
+      "code": "CI-OUM001",
+      "region": "Gôh-Djiboua",
+      "latitude": 6.3800,
+      "longitude": -5.4200
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 41,
+    "fields": {
+      "nom": "Sassandra",
+      "code": "CI-SAS001",
+      "region": "Bas-Sassandra",
+      "latitude": 4.9500,
+      "longitude": -6.0800
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 42,
+    "fields": {
+      "nom": "Séguéla",
+      "code": "CI-SEG001",
+      "region": "Woroba",
+      "latitude": 7.9600,
+      "longitude": -6.6700
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 43,
+    "fields": {
+      "nom": "Sinfra",
+      "code": "CI-SIN001",
+      "region": "Sassandra-Marahoué",
+      "latitude": 6.6200,
+      "longitude": -5.9200
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 44,
+    "fields": {
+      "nom": "Soubré",
+      "code": "CI-SOU001",
+      "region": "Bas-Sassandra",
+      "latitude": 5.7800,
+      "longitude": -6.6100
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 45,
+    "fields": {
+      "nom": "Touba",
+      "code": "CI-TOU001",
+      "region": "Woroba",
+      "latitude": 8.2800,
+      "longitude": -7.6800
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 46,
+    "fields": {
+      "nom": "Toulepleu",
+      "code": "CI-TOL001",
+      "region": "Montagnes",
+      "latitude": 6.5700,
+      "longitude": -8.4100
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 47,
+    "fields": {
+      "nom": "Toumodi",
+      "code": "CI-TOM001",
+      "region": "Lacs",
+      "latitude": 6.5500,
+      "longitude": -5.0200
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 48,
+    "fields": {
+      "nom": "Vavoua",
+      "code": "CI-VAV001",
+      "region": "Sassandra-Marahoué",
+      "latitude": 7.3800,
+      "longitude": -6.4800
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 49,
+    "fields": {
+      "nom": "Zouan-Hounien",
+      "code": "CI-ZOU001",
+      "region": "Montagnes",
+      "latitude": 7.2200,
+      "longitude": -8.2200
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 50,
+    "fields": {
+      "nom": "Zuénoula",
+      "code": "CI-ZUE001",
+      "region": "Sassandra-Marahoué",
+      "latitude": 7.4300,
+      "longitude": -6.0500
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 51,
+    "fields": {
+      "nom": "Adzopé",
+      "code": "CI-ADZ001",
+      "region": "Lagunes",
+      "latitude": 6.1000,
+      "longitude": -3.8700
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 52,
+    "fields": {
+      "nom": "Akoupé",
+      "code": "CI-AKP001",
+      "region": "Lagunes",
+      "latitude": 5.9800,
+      "longitude": -4.2700
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 53,
+    "fields": {
+      "nom": "Arrah",
+      "code": "CI-ARR001",
+      "region": "Comoé",
+      "latitude": 6.6700,
+      "longitude": -3.9700
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 54,
+    "fields": {
+      "nom": "Béoumi",
+      "code": "CI-BEO001",
+      "region": "Vallée du Bandama",
+      "latitude": 7.6700,
+      "longitude": -5.5800
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 55,
+    "fields": {
+      "nom": "Bloléquin",
+      "code": "CI-BLO001",
+      "region": "Montagnes",
+      "latitude": 6.5700,
+      "longitude": -8.0000
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 56,
+    "fields": {
+      "nom": "Dabakala",
+      "code": "CI-DBK001",
+      "region": "Vallée du Bandama",
+      "latitude": 8.3600,
+      "longitude": -4.4300
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 57,
+    "fields": {
+      "nom": "Grand-Lahou",
+      "code": "CI-GRL001",
+      "region": "Lagunes",
+      "latitude": 5.1500,
+      "longitude": -5.0200
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 58,
+    "fields": {
+      "nom": "Guibéroua",
+      "code": "CI-GUI002",
+      "region": "Gôh-Djiboua",
+      "latitude": 6.0000,
+      "longitude": -6.0800
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 59,
+    "fields": {
+      "nom": "Hiré",
+      "code": "CI-HIR001",
+      "region": "Gôh-Djiboua",
+      "latitude": 5.8700,
+      "longitude": -5.6800
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 60,
+    "fields": {
+      "nom": "Kong",
+      "code": "CI-KON001",
+      "region": "Savanes",
+      "latitude": 9.1500,
+      "longitude": -4.6000
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 61,
+    "fields": {
+      "nom": "Méagui",
+      "code": "CI-MEA001",
+      "region": "Bas-Sassandra",
+      "latitude": 5.4100,
+      "longitude": -6.2600
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 62,
+    "fields": {
+      "nom": "Mignane",
+      "code": "CI-MIG001",
+      "region": "Zanzan",
+      "latitude": 8.0500,
+      "longitude": -2.6500
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 63,
+    "fields": {
+      "nom": "Niakaramandougou",
+      "code": "CI-NIA001",
+      "region": "Savanes",
+      "latitude": 9.2800,
+      "longitude": -5.5700
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 64,
+    "fields": {
+      "nom": "Ouangolodougou",
+      "code": "CI-OUA001",
+      "region": "Savanes",
+      "latitude": 9.9700,
+      "longitude": -5.1400
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 65,
+    "fields": {
+      "nom": "Prioro",
+      "code": "CI-PRI001",
+      "region": "Savanes",
+      "latitude": 9.3200,
+      "longitude": -5.2300
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 66,
+    "fields": {
+      "nom": "Sakassou",
+      "code": "CI-SAK001",
+      "region": "Vallée du Bandama",
+      "latitude": 7.4500,
+      "longitude": -5.2900
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 67,
+    "fields": {
+      "nom": "Sandégué",
+      "code": "CI-SAN002",
+      "region": "Zanzan",
+      "latitude": 8.0000,
+      "longitude": -3.5800
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 68,
+    "fields": {
+      "nom": "Sikensi",
+      "code": "CI-SIK001",
+      "region": "Lagunes",
+      "latitude": 5.6700,
+      "longitude": -4.5800
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 69,
+    "fields": {
+      "nom": "Tabou",
+      "code": "CI-TAB001",
+      "region": "Bas-Sassandra",
+      "latitude": 4.4200,
+      "longitude": -7.3600
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 70,
+    "fields": {
+      "nom": "Taï",
+      "code": "CI-TAI001",
+      "region": "Bas-Sassandra",
+      "latitude": 5.8700,
+      "longitude": -7.4500
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 71,
+    "fields": {
+      "nom": "Tengréla",
+      "code": "CI-TEN001",
+      "region": "Savanes",
+      "latitude": 10.4800,
+      "longitude": -6.4000
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 72,
+    "fields": {
+      "nom": "Tiapoum",
+      "code": "CI-TIA001",
+      "region": "Comoé",
+      "latitude": 5.1400,
+      "longitude": -3.0200
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 73,
+    "fields": {
+      "nom": "Touba",
+      "code": "CI-TOU002",
+      "region": "Woroba",
+      "latitude": 8.2800,
+      "longitude": -7.6800
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 74,
+    "fields": {
+      "nom": "Transua",
+      "code": "CI-TRA001",
+      "region": "Zanzan",
+      "latitude": 7.8800,
+      "longitude": -3.0000
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 75,
+    "fields": {
+      "nom": "Treichville",
+      "code": "CI-TRE001",
+      "region": "Abidjan",
+      "latitude": 5.3000,
+      "longitude": -4.0000
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 76,
+    "fields": {
+      "nom": "Yopougon",
+      "code": "CI-YOP001",
+      "region": "Abidjan",
+      "latitude": 5.3200,
+      "longitude": -4.0500
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 77,
+    "fields": {
+      "nom": "Abobo",
+      "code": "CI-ABO002",
+      "region": "Abidjan",
+      "latitude": 5.4200,
+      "longitude": -4.0200
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 78,
+    "fields": {
+      "nom": "Adjamé",
+      "code": "CI-ADJ001",
+      "region": "Abidjan",
+      "latitude": 5.3400,
+      "longitude": -4.0200
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 79,
+    "fields": {
+      "nom": "Attécoubé",
+      "code": "CI-ATT001",
+      "region": "Abidjan",
+      "latitude": 5.3200,
+      "longitude": -4.0200
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 80,
+    "fields": {
+      "nom": "Cocody",
+      "code": "CI-COC001",
+      "region": "Abidjan",
+      "latitude": 5.3500,
+      "longitude": -3.9800
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 81,
+    "fields": {
+      "nom": "Koumassi",
+      "code": "CI-KOU001",
+      "region": "Abidjan",
+      "latitude": 5.3000,
+      "longitude": -3.9500
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 82,
+    "fields": {
+      "nom": "Marcory",
+      "code": "CI-MAR001",
+      "region": "Abidjan",
+      "latitude": 5.2900,
+      "longitude": -3.9900
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 83,
+    "fields": {
+      "nom": "Plateau",
+      "code": "CI-PLA001",
+      "region": "Abidjan",
+      "latitude": 5.3200,
+      "longitude": -4.0100
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 84,
+    "fields": {
+      "nom": "Port-Bouët",
+      "code": "CI-POR001",
+      "region": "Abidjan",
+      "latitude": 5.2700,
+      "longitude": -3.9300
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 85,
+    "fields": {
+      "nom": "Songon",
+      "code": "CI-SON001",
+      "region": "Abidjan",
+      "latitude": 5.3200,
+      "longitude": -4.2500
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 86,
+    "fields": {
+      "nom": "Williamsville",
+      "code": "CI-WIL001",
+      "region": "Abidjan",
+      "latitude": 5.3500,
+      "longitude": -4.0000
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 87,
+    "fields": {
+      "nom": "Jacqueville",
+      "code": "CI-JAC001",
+      "region": "Lagunes",
+      "latitude": 5.2000,
+      "longitude": -4.4200
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 88,
+    "fields": {
+      "nom": "Toumodi",
+      "code": "CI-TOM002",
+      "region": "Lacs",
+      "latitude": 6.5500,
+      "longitude": -5.0200
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 89,
+    "fields": {
+      "nom": "Tiébissou",
+      "code": "CI-TIE001",
+      "region": "Lacs",
+      "latitude": 6.8300,
+      "longitude": -5.2300
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 90,
+    "fields": {
+      "nom": "Didiévi",
+      "code": "CI-DID001",
+      "region": "Lacs",
+      "latitude": 7.1800,
+      "longitude": -5.1700
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 91,
+    "fields": {
+      "nom": "Bocanda",
+      "code": "CI-BOC001",
+      "region": "Lacs",
+      "latitude": 6.9800,
+      "longitude": -4.5200
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 92,
+    "fields": {
+      "nom": "Brouh",
+      "code": "CI-BRO001",
+      "region": "Lacs",
+      "latitude": 7.1500,
+      "longitude": -4.6500
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 93,
+    "fields": {
+      "nom": "Bouaflé",
+      "code": "CI-BOU002",
+      "region": "Sassandra-Marahoué",
+      "latitude": 6.9900,
+      "longitude": -5.7500
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 94,
+    "fields": {
+      "nom": "Sinfra",
+      "code": "CI-SIN002",
+      "region": "Sassandra-Marahoué",
+      "latitude": 6.6200,
+      "longitude": -5.9200
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 95,
+    "fields": {
+      "nom": "Zuénoula",
+      "code": "CI-ZUE002",
+      "region": "Sassandra-Marahoué",
+      "latitude": 7.4300,
+      "longitude": -6.0500
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 96,
+    "fields": {
+      "nom": "Issia",
+      "code": "CI-ISS002",
+      "region": "Sassandra-Marahoué",
+      "latitude": 6.4900,
+      "longitude": -6.5800
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 97,
+    "fields": {
+      "nom": "Daloa",
+      "code": "CI-DAL002",
+      "region": "Sassandra-Marahoué",
+      "latitude": 6.8800,
+      "longitude": -6.4500
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 98,
+    "fields": {
+      "nom": "Vavoua",
+      "code": "CI-VAV002",
+      "region": "Sassandra-Marahoué",
+      "latitude": 7.3800,
+      "longitude": -6.4800
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 99,
+    "fields": {
+      "nom": "Man",
+      "code": "CI-MAN003",
+      "region": "Montagnes",
+      "latitude": 7.4000,
+      "longitude": -7.5500
+    }
+  },
+  {
+    "model": "foncier.commune",
+    "pk": 100,
+    "fields": {
+      "nom": "Biankouma",
+      "code": "CI-BIA001",
+      "region": "Montagnes",
+      "latitude": 7.7300,
+      "longitude": -7.6200
+    }
+  }
+]

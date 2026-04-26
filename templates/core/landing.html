@@ -1,0 +1,641 @@
+{% extends 'base.html' %}
+
+{% block title %}Accueil{% endblock %}
+
+{% block extra_head %}
+<style>
+/* HERO */
+.hero {
+  min-height: 92vh;
+  background: linear-gradient(135deg, #0a0f1e 0%, #1a2340 40%, #0d1f0d 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 4rem 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: 
+    radial-gradient(ellipse 800px 600px at 20% 50%, rgba(247,127,0,0.12) 0%, transparent 70%),
+    radial-gradient(ellipse 600px 800px at 80% 30%, rgba(0,155,85,0.10) 0%, transparent 70%);
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(247,127,0,0.15);
+  border: 1px solid rgba(247,127,0,0.3);
+  color: var(--orange-light);
+  padding: 0.5rem 1.25rem;
+  border-radius: 100px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-title {
+  font-family: var(--font-heading);
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 800;
+  color: white;
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+}
+
+.hero-title .highlight {
+  background: linear-gradient(90deg, var(--orange), var(--orange-light));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-title .highlight-green {
+  background: linear-gradient(90deg, var(--green), var(--green-light));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-desc {
+  font-size: 1.125rem;
+  color: rgba(255,255,255,0.7);
+  max-width: 620px;
+  line-height: 1.75;
+  margin-bottom: 2.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 4rem;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-stats {
+  display: flex;
+  gap: 3rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
+  padding-top: 3rem;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  width: 100%;
+  max-width: 700px;
+}
+
+.hero-stat-val {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  font-weight: 800;
+  color: white;
+}
+
+.hero-stat-label {
+  font-size: 0.8125rem;
+  color: rgba(255,255,255,0.5);
+  margin-top: 0.25rem;
+}
+
+/* FLOATING CARDS */
+.hero-floating {
+  position: absolute;
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  font-size: 0.8125rem;
+  color: white;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.hero-floating.left { left: 5%; top: 30%; animation: float 6s ease-in-out infinite; }
+.hero-floating.right { right: 5%; top: 40%; animation: float 6s ease-in-out infinite 3s; }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* SECTIONS */
+.section { padding: 6rem 2rem; }
+.section-center { text-align: center; max-width: 640px; margin: 0 auto 3.5rem; }
+.section-tag {
+  display: inline-block;
+  background: var(--orange-pale);
+  color: var(--orange);
+  padding: 0.375rem 1rem;
+  border-radius: 100px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 1rem;
+}
+.section-tag.green { background: var(--green-pale); color: var(--green); }
+.section-title { font-size: clamp(1.75rem, 3vw, 2.25rem); font-weight: 800; margin-bottom: 1rem; }
+.section-desc { color: var(--gray-500); font-size: 1rem; line-height: 1.75; }
+
+/* FEATURES */
+.feature-card {
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  border: 1px solid var(--gray-100);
+  box-shadow: var(--shadow);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.feature-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+.feature-icon {
+  width: 56px;
+  height: 56px;
+  background: var(--orange-pale);
+  color: var(--orange);
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+.feature-icon.green { background: var(--green-pale); color: var(--green); }
+.feature-icon.blue { background: #EFF6FF; color: var(--blue); }
+.feature-icon.purple { background: #F5F3FF; color: var(--purple); }
+.feature-title { font-size: 1.0625rem; font-weight: 700; margin-bottom: 0.625rem; }
+.feature-desc { font-size: 0.875rem; color: var(--gray-500); line-height: 1.7; }
+
+/* HOW IT WORKS */
+.steps-section { background: var(--gray-50); }
+.step { display: flex; gap: 1.5rem; align-items: flex-start; }
+.step-number {
+  width: 48px;
+  height: 48px;
+  background: var(--orange);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 1.125rem;
+  flex-shrink: 0;
+}
+.step-content { padding-top: 0.5rem; }
+.step-title { font-weight: 700; font-size: 1rem; margin-bottom: 0.375rem; }
+.step-desc { font-size: 0.875rem; color: var(--gray-500); line-height: 1.65; }
+
+/* MAP PREVIEW */
+.map-preview-section { background: white; }
+.map-preview-img {
+  background: linear-gradient(135deg, #1a3a2a 0%, #0d2b1a 100%);
+  border-radius: var(--radius-lg);
+  height: 420px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+
+/* PRICING */
+.pricing-card {
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  border: 2px solid var(--gray-100);
+  text-align: center;
+  transition: transform 0.3s, border-color 0.3s;
+  position: relative;
+}
+.pricing-card:hover { transform: translateY(-4px); }
+.pricing-card.featured { border-color: var(--orange); box-shadow: 0 0 0 4px rgba(247,127,0,0.08); }
+.pricing-badge {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--orange);
+  color: white;
+  padding: 0.25rem 1rem;
+  border-radius: 100px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.pricing-name { font-weight: 700; font-size: 0.875rem; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.5rem; }
+.pricing-price { font-family: var(--font-heading); font-size: 2.25rem; font-weight: 800; color: var(--gray-900); }
+.pricing-price span { font-size: 0.875rem; color: var(--gray-500); font-weight: 400; }
+.pricing-features { list-style: none; margin: 1.5rem 0; text-align: left; display: flex; flex-direction: column; gap: 0.625rem; }
+.pricing-features li { display: flex; align-items: center; gap: 0.625rem; font-size: 0.875rem; color: var(--gray-700); }
+.pricing-features li::before { content: '✓'; color: var(--green); font-weight: 700; flex-shrink: 0; }
+
+/* TESTIMONIALS */
+.testimonial-card {
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: 1.75rem;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--gray-100);
+}
+.testimonial-text { font-size: 0.9375rem; color: var(--gray-700); line-height: 1.75; margin-bottom: 1.25rem; font-style: italic; }
+.testimonial-author { display: flex; align-items: center; gap: 0.75rem; }
+.author-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: white;
+  font-size: 0.875rem;
+}
+
+/* CTA */
+.cta-section {
+  background: linear-gradient(135deg, var(--orange) 0%, var(--orange-dark) 100%);
+  color: white;
+  text-align: center;
+  padding: 5rem 2rem;
+}
+.cta-title { font-size: clamp(1.75rem, 3vw, 2.5rem); font-weight: 800; color: white; margin-bottom: 1rem; }
+.cta-desc { color: rgba(255,255,255,0.85); font-size: 1rem; margin-bottom: 2.5rem; max-width: 540px; margin-left: auto; margin-right: auto; }
+
+/* PROBLEMS */
+.problem-item {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  padding: 1.25rem;
+  background: white;
+  border-radius: var(--radius);
+  border: 1px solid var(--gray-100);
+  box-shadow: var(--shadow-sm);
+}
+.problem-icon { font-size: 1.5rem; flex-shrink: 0; margin-top: 0.125rem; }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- HERO -->
+<section class="hero">
+  <!-- Floating Cards -->
+  <div class="hero-floating left">
+    <span style="color:var(--green-light);">✓</span>
+    <div>
+      <div style="font-weight:600;">Terrain vérifié</div>
+      <div style="font-size:0.75rem;opacity:0.7;">Réf. CI-ABJ-2024-00847</div>
+    </div>
+  </div>
+  <div class="hero-floating right">
+    <span>🔔</span>
+    <div>
+      <div style="font-weight:600;">Alerte fraude évitée</div>
+      <div style="font-size:0.75rem;opacity:0.7;">Vente multiple détectée</div>
+    </div>
+  </div>
+
+  <div class="hero-badge">
+    🇨🇮 Plateforme Nationale — Côte d'Ivoire
+  </div>
+
+  <h1 class="hero-title">
+    Le foncier ivoirien,<br>
+    <span class="highlight">transparent</span> et
+    <span class="highlight-green">sécurisé</span>
+  </h1>
+
+  <p class="hero-desc">
+    AkwabaFoncier est la plateforme nationale de référence pour vérifier, sécuriser et gérer les transactions foncières en Côte d'Ivoire. Avant d'acheter un terrain, vérifiez. Avant de vendre, sécurisez.
+  </p>
+
+  <div class="hero-actions">
+    {% if user.is_authenticated %}
+      <a href="/cartographie/" class="btn btn-primary btn-lg">🗺️ Accéder à la carte</a>
+      <a href="/dashboard/" class="btn btn-lg" style="background:rgba(255,255,255,0.12);color:white;border:1px solid rgba(255,255,255,0.25);">Mon espace</a>
+    {% else %}
+      <a href="/auth/register/" class="btn btn-primary btn-lg">Commencer gratuitement</a>
+      <a href="/cartographie/" class="btn btn-lg" style="background:rgba(255,255,255,0.12);color:white;border:1px solid rgba(255,255,255,0.25);">🗺️ Voir la carte</a>
+    {% endif %}
+  </div>
+
+  <div class="hero-stats">
+    <div>
+      <div class="hero-stat-val">{{ stats.terrains|default:"0" }}+</div>
+      <div class="hero-stat-label">Terrains enregistrés</div>
+    </div>
+    <div>
+      <div class="hero-stat-val">{{ stats.communes|default:"0" }}+</div>
+      <div class="hero-stat-label">Communes couvertes</div>
+    </div>
+    <div>
+      <div class="hero-stat-val">{{ stats.utilisateurs|default:"0" }}+</div>
+      <div class="hero-stat-label">Citoyens protégés</div>
+    </div>
+    <div>
+      <div class="hero-stat-val">98%</div>
+      <div class="hero-stat-label">Fraudes évitées</div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEMES -->
+<section class="section" style="background:white;">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div class="section-center">
+      <span class="section-tag">Le problème</span>
+      <h2 class="section-title">Le foncier ivoirien souffre de dysfonctionnements graves</h2>
+      <p class="section-desc">Des milliers de citoyens perdent leurs économies chaque année à cause de fraudes foncières évitables.</p>
+    </div>
+    <div class="grid-3">
+      <div class="problem-item">
+        <span class="problem-icon">😱</span>
+        <div>
+          <div style="font-weight:700;margin-bottom:0.25rem;">Ventes multiples</div>
+          <p style="font-size:0.875rem;color:var(--gray-500);">Un même terrain vendu à plusieurs acquéreurs en même temps, sans possibilité de vérification.</p>
+        </div>
+      </div>
+      <div class="problem-item">
+        <span class="problem-icon">📄</span>
+        <div>
+          <div style="font-weight:700;margin-bottom:0.25rem;">Documents falsifiés</div>
+          <p style="font-size:0.875rem;color:var(--gray-500);">Titres fonciers et ACD contrefaits circulant librement sans système de vérification officiel.</p>
+        </div>
+      </div>
+      <div class="problem-item">
+        <span class="problem-icon">⏳</span>
+        <div>
+          <div style="font-weight:700;margin-bottom:0.25rem;">Lenteur administrative</div>
+          <p style="font-size:0.875rem;color:var(--gray-500);">5 à 10 ans pour obtenir un titre foncier. Des dossiers perdus. Aucun suivi possible.</p>
+        </div>
+      </div>
+      <div class="problem-item">
+        <span class="problem-icon">⚔️</span>
+        <div>
+          <div style="font-weight:700;margin-bottom:0.25rem;">Conflits fonciers</div>
+          <p style="font-size:0.875rem;color:var(--gray-500);">Des conflits parfois violents qui brisent des familles et déchirent des communautés entières.</p>
+        </div>
+      </div>
+      <div class="problem-item">
+        <span class="problem-icon">🔒</span>
+        <div>
+          <div style="font-weight:700;margin-bottom:0.25rem;">Opacité de l'information</div>
+          <p style="font-size:0.875rem;color:var(--gray-500);">Aucun accès public à l'information foncière officielle. Le citoyen navigue à l'aveugle.</p>
+        </div>
+      </div>
+      <div class="problem-item">
+        <span class="problem-icon">📉</span>
+        <div>
+          <div style="font-weight:700;margin-bottom:0.25rem;">Insécurité pour les investisseurs</div>
+          <p style="font-size:0.875rem;color:var(--gray-500);">Les investisseurs étrangers et locaux hésitent à s'engager sans garanties juridiques fiables.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FONCTIONNALITES -->
+<section class="section" style="background:var(--ivory);">
+  <div style="max-width:1200px;margin:0 auto;">
+    <div class="section-center">
+      <span class="section-tag">La solution</span>
+      <h2 class="section-title">Tout ce dont vous avez besoin pour sécuriser votre foncier</h2>
+      <p class="section-desc">Une plateforme complète qui couvre l'ensemble du cycle de vie d'une transaction foncière.</p>
+    </div>
+    <div class="grid-3" style="gap:1.5rem;">
+      <div class="feature-card">
+        <div class="feature-icon">🗺️</div>
+        <h3 class="feature-title">Cartographie SIG Interactive</h3>
+        <p class="feature-desc">Explorez la carte nationale des terrains avec code couleur par statut juridique. Visualisez chaque parcelle, son historique et ses alertes en temps réel.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon green">🔍</div>
+        <h3 class="feature-title">Vérification Avant Achat</h3>
+        <p class="feature-desc">Avant toute transaction, vérifiez instantanément l'authenticité du terrain, identifiez le propriétaire officiel et détectez tout risque juridique.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon blue">📋</div>
+        <h3 class="feature-title">Procédures en Ligne</h3>
+        <p class="feature-desc">Déposez et suivez vos demandes d'ACD, titre foncier et morcellement directement en ligne. Fini les files d'attente et les dossiers perdus.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon purple">⚠️</div>
+        <h3 class="feature-title">Système d'Alertes</h3>
+        <p class="feature-desc">Détection automatique de fraudes, ventes multiples et documents falsifiés. Soyez notifié avant qu'il ne soit trop tard.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📁</div>
+        <h3 class="feature-title">Fiche Terrain Complète</h3>
+        <p class="feature-desc">Référence cadastrale, superficie, propriétaire officiel, statut juridique, historique administratif complet et documents associés.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon green">💳</div>
+        <h3 class="feature-title">Paiement Mobile Intégré</h3>
+        <p class="feature-desc">Payez vos services via Orange Money, MTN MoMo, Wave ou carte bancaire. Simple, rapide et sécurisé depuis votre téléphone.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMMENT CA MARCHE -->
+<section class="section steps-section">
+  <div style="max-width:1000px;margin:0 auto;">
+    <div class="section-center">
+      <span class="section-tag">Comment ça marche</span>
+      <h2 class="section-title">Vérifier un terrain en 3 étapes simples</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;">
+      <div style="display:flex;flex-direction:column;gap:2rem;">
+        <div class="step">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <div class="step-title">Recherchez le terrain</div>
+            <p class="step-desc">Entrez la référence cadastrale ou localisez le terrain directement sur la carte interactive nationale.</p>
+          </div>
+        </div>
+        <div style="width:2px;height:24px;background:var(--gray-200);margin-left:24px;"></div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <div class="step-title">Consultez la fiche officielle</div>
+            <p class="step-desc">Accédez au statut juridique, au propriétaire officiel, à l'historique complet et aux alertes actives.</p>
+          </div>
+        </div>
+        <div style="width:2px;height:24px;background:var(--gray-200);margin-left:24px;"></div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <div class="step-title">Obtenez votre certificat</div>
+            <p class="step-desc">Téléchargez un certificat de vérification officiel avant de finaliser votre transaction.</p>
+          </div>
+        </div>
+      </div>
+      <div style="background:white;border-radius:var(--radius-lg);padding:2rem;box-shadow:var(--shadow-lg);border:1px solid var(--gray-100);">
+        <div style="background:var(--gray-50);border-radius:var(--radius);padding:1.25rem;margin-bottom:1rem;">
+          <div style="font-size:0.75rem;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.75rem;">Résultat de vérification</div>
+          <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem;">
+            <div style="width:12px;height:12px;background:var(--green);border-radius:50%;"></div>
+            <span style="font-weight:600;font-size:0.875rem;">Terrain vérifié — Aucun litige</span>
+          </div>
+          <div style="font-size:0.8125rem;color:var(--gray-600);">Réf: CI-ABJ-COCODY-00847</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;font-size:0.8125rem;">
+          <div>
+            <div style="color:var(--gray-400);font-size:0.75rem;margin-bottom:0.25rem;">Propriétaire</div>
+            <div style="font-weight:600;">M. Konan K.</div>
+          </div>
+          <div>
+            <div style="color:var(--gray-400);font-size:0.75rem;margin-bottom:0.25rem;">Statut</div>
+            <span class="badge badge-titre_foncier">Titre Foncier</span>
+          </div>
+          <div>
+            <div style="color:var(--gray-400);font-size:0.75rem;margin-bottom:0.25rem;">Superficie</div>
+            <div style="font-weight:600;">450 m²</div>
+          </div>
+          <div>
+            <div style="color:var(--gray-400);font-size:0.75rem;margin-bottom:0.25rem;">Commune</div>
+            <div style="font-weight:600;">Cocody</div>
+          </div>
+        </div>
+        <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--gray-100);">
+          <div style="display:flex;align-items:center;gap:0.5rem;color:var(--green);font-size:0.875rem;font-weight:600;">
+            ✅ Aucune alerte — Transaction sécurisée
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TARIFS -->
+<section class="section" style="background:white;">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div class="section-center">
+      <span class="section-tag">Tarifs</span>
+      <h2 class="section-title">Des tarifs accessibles à tous</h2>
+      <p class="section-desc">Commencez gratuitement. Passez Pro quand vous en avez besoin.</p>
+    </div>
+    <div class="grid-3" style="gap:1.5rem;">
+      <div class="pricing-card">
+        <div class="pricing-name">Gratuit</div>
+        <div class="pricing-price">0 <span>FCFA</span></div>
+        <ul class="pricing-features">
+          <li>Consultation carte interactive</li>
+          <li>Visualisation statut basique</li>
+          <li>Recherche par commune</li>
+          <li>Création de compte</li>
+        </ul>
+        <a href="/auth/register/" class="btn btn-secondary w-full">Commencer</a>
+      </div>
+      <div class="pricing-card featured">
+        <div class="pricing-badge">Populaire</div>
+        <div class="pricing-name">Citoyen</div>
+        <div class="pricing-price">5 000 <span>FCFA / rapport</span></div>
+        <ul class="pricing-features">
+          <li>Rapport complet du terrain</li>
+          <li>Historique des transactions</li>
+          <li>Certificat de vérification</li>
+          <li>Dépôt de demandes en ligne</li>
+          <li>Suivi de dossier en temps réel</li>
+          <li>Dépôt de réclamations</li>
+        </ul>
+        <a href="/auth/register/" class="btn btn-primary w-full">Choisir ce plan</a>
+      </div>
+      <div class="pricing-card">
+        <div class="pricing-name">Professionnel</div>
+        <div class="pricing-price">50 000 <span>FCFA/mois</span></div>
+        <ul class="pricing-features">
+          <li>Tout le plan Citoyen</li>
+          <li>Vérifications illimitées</li>
+          <li>Accès API & données</li>
+          <li>Tableau de bord professionnel</li>
+          <li>Support prioritaire</li>
+          <li>Rapport personnalisé PDF</li>
+        </ul>
+        <a href="/paiements/abonnement/" class="btn btn-outline w-full">S'abonner</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEMOIGNAGES -->
+<section class="section" style="background:var(--ivory);">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div class="section-center">
+      <span class="section-tag green">Témoignages</span>
+      <h2 class="section-title">Ils nous font confiance</h2>
+    </div>
+    <div class="grid-3" style="gap:1.5rem;">
+      <div class="testimonial-card">
+        <p class="testimonial-text">"Grâce à AkwabaFoncier, j'ai évité d'acheter un terrain déjà vendu deux fois. Le système m'a alerté immédiatement. Je l'aurais payé 18 millions FCFA !"</p>
+        <div class="testimonial-author">
+          <div class="author-avatar" style="background:var(--orange);">AK</div>
+          <div>
+            <div style="font-weight:600;font-size:0.875rem;">Adjoua Kouassi</div>
+            <div style="font-size:0.75rem;color:var(--gray-400);">Ingénieure, Abidjan</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <p class="testimonial-text">"En tant que notaire, AkwabaFoncier a révolutionné mon travail. En quelques secondes, je vérifie ce qui prenait auparavant plusieurs semaines de démarches."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar" style="background:var(--green);">YD</div>
+          <div>
+            <div style="font-weight:600;font-size:0.875rem;">Maître Yao Diallo</div>
+            <div style="font-size:0.75rem;color:var(--gray-400);">Notaire, Cocody</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <p class="testimonial-text">"J'ai pu suivre en temps réel l'avancement de ma demande de titre foncier. Plus besoin de courir aux bureaux ! C'est une vraie révolution pour nous."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar" style="background:var(--blue);">BT</div>
+          <div>
+            <div style="font-weight:600;font-size:0.875rem;">Bamba Traoré</div>
+            <div style="font-size:0.75rem;color:var(--gray-400);">Chef d'entreprise, Bouaké</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="cta-section">
+  <h2 class="cta-title">Protégez votre patrimoine dès aujourd'hui</h2>
+  <p class="cta-desc">Rejoignez des milliers de citoyens et professionnels qui font confiance à AkwabaFoncier pour sécuriser leurs transactions foncières.</p>
+  <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+    {% if user.is_authenticated %}
+      <a href="/cartographie/" class="btn btn-lg" style="background:white;color:var(--orange);">🗺️ Accéder à la carte</a>
+    {% else %}
+      <a href="/auth/register/" class="btn btn-lg" style="background:white;color:var(--orange);">Créer mon compte gratuit</a>
+      <a href="/cartographie/" class="btn btn-lg" style="background:rgba(255,255,255,0.15);color:white;border:1px solid rgba(255,255,255,0.3);">Voir la carte</a>
+    {% endif %}
+  </div>
+</section>
+
+{% endblock %}

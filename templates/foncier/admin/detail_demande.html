@@ -1,0 +1,48 @@
+{% extends 'base_dashboard.html' %}
+{% block title %}Demande {{ demande.reference }}{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">📋 Demande {{ demande.reference }}</h1>
+    <p class="page-subtitle">{{ demande.get_type_demande_display }}</p>
+  </div>
+  <a href="/dashboard/admin-panel/demandes/" class="btn btn-ghost">← Retour</a>
+</div>
+<div class="grid-2" style="gap:1.5rem;">
+  <div>
+    <div class="card" style="margin-bottom:1rem;">
+      <div class="card-header"><span class="card-title">Informations</span></div>
+      <div style="display:flex;flex-direction:column;gap:0.875rem;font-size:0.875rem;">
+        <div class="grid-2"><span style="color:var(--gray-500);">Référence</span><span style="font-weight:600;">{{ demande.reference }}</span></div>
+        <div class="grid-2"><span style="color:var(--gray-500);">Type</span><span>{{ demande.get_type_demande_display }}</span></div>
+        <div class="grid-2"><span style="color:var(--gray-500);">Terrain</span><a href="/dashboard/terrains/{{ demande.terrain.pk }}/">{{ demande.terrain.reference_cadastrale }}</a></div>
+        <div class="grid-2"><span style="color:var(--gray-500);">Demandeur</span><span>{{ demande.demandeur.get_full_name }} ({{ demande.demandeur.email }})</span></div>
+        <div class="grid-2"><span style="color:var(--gray-500);">Statut</span><span class="badge badge-{% if demande.statut == 'approuvee' %}success{% elif demande.statut == 'rejetee' %}danger{% else %}warning{% endif %}">{{ demande.get_statut_display }}</span></div>
+        <div class="grid-2"><span style="color:var(--gray-500);">Soumise le</span><span>{{ demande.date_soumission|date:"d/m/Y à H:i" }}</span></div>
+      </div>
+      <div class="divider"></div>
+      <div style="font-size:0.8125rem;color:var(--gray-500);margin-bottom:0.375rem;">Description</div>
+      <p style="font-size:0.875rem;">{{ demande.description }}</p>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header"><span class="card-title">⚙️ Traiter la demande</span></div>
+    <form method="post">
+      {% csrf_token %}
+      <div class="form-group">
+        <label class="form-label">Changer le statut</label>
+        <select name="statut" class="form-control">
+          {% for val, label in statut_choices %}
+          <option value="{{ val }}" {% if demande.statut == val %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Commentaire administratif</label>
+        <textarea name="commentaire_admin" class="form-control" rows="5" placeholder="Ajoutez un commentaire visible par le demandeur...">{{ demande.commentaire_admin }}</textarea>
+      </div>
+      <button type="submit" class="btn btn-primary w-full">💾 Enregistrer la décision</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

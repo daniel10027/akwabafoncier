@@ -1,0 +1,22 @@
+{% extends 'base_dashboard.html' %}
+{% block title %}Paiement confirmé{% endblock %}
+{% block content %}
+<div style="max-width:500px;margin:3rem auto;text-align:center;">
+  <div class="card" style="border-top:4px solid var(--green);padding:3rem 2rem;">
+    <div style="font-size:4rem;margin-bottom:1.5rem;">✅</div>
+    <h1 style="font-size:1.75rem;font-weight:800;margin-bottom:0.5rem;">Paiement confirmé !</h1>
+    <p style="color:var(--gray-500);margin-bottom:1.5rem;">Votre paiement a été traité avec succès.</p>
+    {% if transaction %}
+    <div style="background:var(--gray-50);border-radius:var(--radius);padding:1rem;margin-bottom:1.5rem;text-align:left;">
+      <div style="font-size:0.8125rem;display:flex;justify-content:space-between;margin-bottom:0.375rem;"><span style="color:var(--gray-500);">Référence</span><span style="font-weight:600;font-family:monospace;">{{ transaction.reference }}</span></div>
+      <div style="font-size:0.8125rem;display:flex;justify-content:space-between;margin-bottom:0.375rem;"><span style="color:var(--gray-500);">Montant</span><span style="font-weight:600;">{{ transaction.montant|floatformat:0 }} FCFA</span></div>
+      <div style="font-size:0.8125rem;display:flex;justify-content:space-between;"><span style="color:var(--gray-500);">Service</span><span>{{ transaction.service.get_service_display }}</span></div>
+    </div>
+    {% endif %}
+    <div style="display:flex;flex-direction:column;gap:0.75rem;">
+      <a href="/dashboard/" class="btn btn-primary w-full">Aller au tableau de bord</a>
+      <a href="/paiements/" class="btn btn-ghost w-full">Voir mes transactions</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

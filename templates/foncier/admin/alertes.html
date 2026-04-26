@@ -1,0 +1,49 @@
+{% extends 'base_dashboard.html' %}
+{% block title %}Alertes actives{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">🚨 Alertes actives ({{ alertes|length }})</h1>
+    <p class="page-subtitle">Incidents et anomalies détectés sur la plateforme</p>
+  </div>
+  <a href="/dashboard/admin-panel/alertes/ajouter/" class="btn btn-danger">+ Créer une alerte</a>
+</div>
+
+{% if alertes %}
+<div style="display:flex;flex-direction:column;gap:1rem;">
+  {% for a in alertes %}
+  <div class="card" style="border-left:4px solid var(--red);">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;">
+      <div style="flex:1;">
+        <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.375rem;">
+          <span style="font-size:1.25rem;">🚨</span>
+          <span style="font-weight:700;font-size:1rem;">{{ a.get_type_alerte_display }}</span>
+          <span class="badge badge-danger">Active</span>
+        </div>
+        <div style="font-size:0.8125rem;margin-bottom:0.5rem;">
+          Terrain : <a href="/dashboard/terrains/{{ a.terrain.pk }}/" style="font-weight:600;color:var(--orange);">{{ a.terrain.reference_cadastrale }}</a>
+          {% if a.terrain.commune %} — {{ a.terrain.commune.nom }}{% endif %}
+        </div>
+        <p style="font-size:0.875rem;color:var(--gray-700);line-height:1.6;">{{ a.description }}</p>
+        <div style="font-size:0.75rem;color:var(--gray-400);margin-top:0.5rem;">
+          Créée le {{ a.date_creation|date:"d/m/Y à H:i" }}
+          {% if a.signale_par %} · Par {{ a.signale_par.get_full_name|default:a.signale_par.username }}{% endif %}
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:0.5rem;flex-shrink:0;">
+        <a href="/dashboard/terrains/{{ a.terrain.pk }}/" class="btn btn-ghost btn-sm">👁️ Voir terrain</a>
+        <a href="/dashboard/admin-panel/alertes/{{ a.pk }}/resoudre/" class="btn btn-success btn-sm"
+           onclick="return confirm('Marquer cette alerte comme résolue ?')">✅ Résoudre</a>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+  <div class="empty-icon">✅</div>
+  <div class="empty-title">Aucune alerte active</div>
+  <p style="color:var(--gray-500);font-size:0.875rem;margin-top:0.5rem;">La plateforme ne signale aucun incident en ce moment.</p>
+</div>
+{% endif %}
+{% endblock %}

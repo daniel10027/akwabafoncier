@@ -1,0 +1,104 @@
+{% extends 'base_dashboard.html' %}
+{% block title %}Modifier terrain{% endblock %}
+{% block extra_head %}<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">✏️ Modifier — {{ terrain.reference_cadastrale }}</h1>
+    <p class="page-subtitle">Mettre à jour les informations de ce terrain</p>
+  </div>
+  <div style="display:flex;gap:0.75rem;">
+    <a href="/dashboard/terrains/{{ terrain.pk }}/" class="btn btn-ghost">👁️ Voir fiche</a>
+    <a href="/dashboard/admin-panel/terrains/" class="btn btn-ghost">← Retour</a>
+  </div>
+</div>
+<div class="grid-2" style="gap:1.5rem;">
+  <div class="card">
+    <form method="post">
+      {% csrf_token %}
+      <div class="grid-2" style="gap:1rem;">
+        <div class="form-group">
+          <label class="form-label">Superficie (m²)</label>
+          <input type="number" name="superficie" class="form-control" value="{{ terrain.superficie }}" step="0.01">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Valeur estimée (FCFA)</label>
+          <input type="number" name="valeur_estimee" class="form-control" value="{{ terrain.valeur_estimee }}">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Statut juridique</label>
+          <select name="statut" class="form-control">
+            {% for val, label in statut_choices %}
+            <option value="{{ val }}" {% if terrain.statut == val %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Zone d'usage</label>
+          <select name="zone_usage" class="form-control">
+            {% for val, label in zone_choices %}
+            <option value="{{ val }}" {% if terrain.zone_usage == val %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Latitude</label>
+          <input type="number" name="latitude" id="lat-input" class="form-control" value="{{ terrain.latitude }}" step="0.000001">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Longitude</label>
+          <input type="number" name="longitude" id="lng-input" class="form-control" value="{{ terrain.longitude }}" step="0.000001">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Adresse complète</label>
+        <input type="text" name="adresse_complete" class="form-control" value="{{ terrain.adresse_complete }}">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Propriétaire</label>
+        <select name="proprietaire" class="form-control">
+          <option value="">Non assigné</option>
+          {% for u in utilisateurs %}
+          <option value="{{ u.pk }}" {% if terrain.proprietaire_actuel and terrain.proprietaire_actuel.pk == u.pk %}selected{% endif %}>{{ u.get_full_name|default:u.username }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Notes administratives</label>
+        <textarea name="notes_admin" class="form-control">{{ terrain.notes_admin }}</textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">💾 Enregistrer les modifications</button>
+    </form>
+  </div>
+  <div>
+    <div class="card">
+      <div class="card-header"><span class="card-title">📍 Position sur la carte</span></div>
+      <div id="picker-map" style="height:300px;border-radius:var(--radius);overflow:hidden;"></div>
+    </div>
+    <div class="card" style="margin-top:1rem;">
+      <div class="card-header"><span class="card-title">📋 Informations actuelles</span></div>
+      <div style="display:flex;flex-direction:column;gap:0.5rem;font-size:0.875rem;">
+        <div style="display:flex;justify-content:space-between;"><span style="color:var(--gray-500);">Référence</span><span style="font-weight:600;">{{ terrain.reference_cadastrale }}</span></div>
+        <div style="display:flex;justify-content:space-between;"><span style="color:var(--gray-500);">Commune</span><span>{{ terrain.commune.nom|default:"—" }}</span></div>
+        <div style="display:flex;justify-content:space-between;"><span style="color:var(--gray-500);">Statut actuel</span><span class="badge badge-{{ terrain.statut }}">{{ terrain.get_statut_display }}</span></div>
+        <div style="display:flex;justify-content:space-between;"><span style="color:var(--gray-500);">Modifié le</span><span>{{ terrain.date_modification|date:"d/m/Y H:i" }}</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const lat0 = {{ terrain.latitude }}, lng0 = {{ terrain.longitude }};
+const pickerMap = L.map('picker-map').setView([lat0, lng0], 14);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(pickerMap);
+let marker = L.marker([lat0, lng0]).addTo(pickerMap);
+pickerMap.on('click', function(e) {
+  const {lat, lng} = e.latlng;
+  document.getElementById('lat-input').value = lat.toFixed(6);
+  document.getElementById('lng-input').value = lng.toFixed(6);
+  marker.setLatLng([lat, lng]);
+});
+</script>
+{% endblock %}

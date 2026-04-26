@@ -1,0 +1,26 @@
+{% extends 'base_dashboard.html' %}
+{% block title %}Mes réclamations{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div><h1 class="page-title">⚠️ Mes réclamations</h1></div>
+  <a href="/dashboard/reclamations/nouvelle/" class="btn btn-primary">+ Nouvelle réclamation</a>
+</div>
+{% if reclamations %}
+<div style="display:flex;flex-direction:column;gap:1rem;">
+  {% for r in reclamations %}
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+      <div>
+        <div style="font-weight:700;font-family:monospace;margin-bottom:0.25rem;">{{ r.reference }}</div>
+        <div style="font-weight:600;margin-bottom:0.375rem;">{{ r.objet }}</div>
+        <div style="font-size:0.8125rem;color:var(--gray-500);">Terrain: {{ r.terrain.reference_cadastrale }} — Déposée le {{ r.date_depot|date:"d/m/Y" }}</div>
+      </div>
+      <span class="badge badge-{% if r.statut == 'resolue' %}success{% elif r.statut == 'deposee' %}warning{% else %}info{% endif %}">{{ r.get_statut_display }}</span>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-title">Aucune réclamation</div><a href="/dashboard/reclamations/nouvelle/" class="btn btn-primary" style="margin-top:1rem;">Déposer une réclamation</a></div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,81 @@
+{% extends 'base_dashboard.html' %}
+{% block title %}Utilisateurs{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">👥 Utilisateurs ({{ users|length }})</h1>
+    <p class="page-subtitle">Gestion des comptes sur la plateforme</p>
+  </div>
+</div>
+
+<!-- Stats rapides -->
+<div class="grid-4" style="margin-bottom:1.5rem;">
+  <div class="stat-card">
+    <div class="stat-icon green">👤</div>
+    <div><div class="stat-value">{{ users|length }}</div><div class="stat-label">Total</div></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon blue">🏠</div>
+    <div><div class="stat-value">{{ users|length }}</div><div class="stat-label">Citoyens</div></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon orange">💼</div>
+    <div><div class="stat-value">0</div><div class="stat-label">Pro</div></div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon red">⚙️</div>
+    <div><div class="stat-value">0</div><div class="stat-label">Admins</div></div>
+  </div>
+</div>
+
+<div class="table-wrapper">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Utilisateur</th>
+        <th>Email</th>
+        <th>Téléphone</th>
+        <th>Rôle</th>
+        <th>Vérifié</th>
+        <th>Inscrit le</th>
+        <th>Dernière connexion</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for u in users %}
+      <tr>
+        <td>
+          <div style="display:flex;align-items:center;gap:0.75rem;">
+            <div style="width:36px;height:36px;background:linear-gradient(135deg,var(--orange),var(--orange-dark));border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:0.8125rem;flex-shrink:0;">
+              {{ u.first_name|first|upper }}{{ u.last_name|first|upper }}
+            </div>
+            <div>
+              <div style="font-weight:600;font-size:0.875rem;">{{ u.get_full_name|default:u.username }}</div>
+              <div style="font-size:0.75rem;color:var(--gray-400);">@{{ u.username }}</div>
+            </div>
+          </div>
+        </td>
+        <td style="font-size:0.8125rem;">{{ u.email|default:"—" }}</td>
+        <td style="font-size:0.8125rem;">{{ u.telephone|default:"—" }}</td>
+        <td>
+          <span class="badge badge-{% if u.role == 'super_admin' %}danger{% elif u.role == 'admin_operationnel' %}warning{% elif u.role == 'professionnel' %}info{% else %}secondary{% endif %}">
+            {{ u.get_role_display }}
+          </span>
+        </td>
+        <td>
+          {% if u.est_verifie %}
+            <span style="color:var(--green);">✅ Oui</span>
+          {% else %}
+            <span style="color:var(--gray-400);">—</span>
+          {% endif %}
+        </td>
+        <td style="font-size:0.8125rem;color:var(--gray-500);">{{ u.date_joined|date:"d/m/Y" }}</td>
+        <td style="font-size:0.8125rem;color:var(--gray-500);">{{ u.last_login|date:"d/m/Y H:i"|default:"—" }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="7" style="text-align:center;padding:3rem;color:var(--gray-400);">Aucun utilisateur</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

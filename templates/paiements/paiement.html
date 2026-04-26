@@ -1,0 +1,39 @@
+{% extends 'base_dashboard.html' %}
+{% block title %}Paiement{% endblock %}
+{% block content %}
+<div style="max-width:520px;margin:0 auto;">
+  <div class="page-header"><h1 class="page-title">💳 Paiement sécurisé</h1></div>
+  <div class="card" style="border-top:3px solid var(--orange);margin-bottom:1rem;">
+    <div class="card-header"><span class="card-title">Récapitulatif</span></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:1rem 0;border-bottom:1px solid var(--gray-100);">
+      <div><div style="font-weight:600;">{{ tarif.get_service_display }}</div><div style="font-size:0.8125rem;color:var(--gray-500);">{{ tarif.description }}</div></div>
+      <div style="font-family:var(--font-heading);font-size:1.5rem;font-weight:800;color:var(--orange);">{{ transaction.montant|floatformat:0 }} FCFA</div>
+    </div>
+    <div style="padding-top:0.75rem;font-size:0.8125rem;color:var(--gray-500);">Référence: {{ transaction.reference }}</div>
+  </div>
+  <div class="card">
+    <div class="card-header"><span class="card-title">Choisir le mode de paiement</span></div>
+    <div style="display:flex;flex-direction:column;gap:0.75rem;">
+      {% for val, label in 'orange_money:Orange Money,mtn_momo:MTN MoMo,wave:Wave,cinetpay:CinetPay (Carte)' | split:',' %}
+      {% endfor %}
+      <a href="/paiements/retour/?transaction_id={{ transaction.reference }}&method=orange_money" class="btn btn-lg" style="background:#FF6B00;color:white;justify-content:flex-start;">
+        <span style="font-size:1.25rem;">🟠</span> Orange Money
+      </a>
+      <a href="/paiements/retour/?transaction_id={{ transaction.reference }}&method=mtn_momo" class="btn btn-lg" style="background:#FFC200;color:#1a1a1a;justify-content:flex-start;">
+        <span style="font-size:1.25rem;">🟡</span> MTN MoMo
+      </a>
+      <a href="/paiements/retour/?transaction_id={{ transaction.reference }}&method=wave" class="btn btn-lg" style="background:#1A56DB;color:white;justify-content:flex-start;">
+        <span style="font-size:1.25rem;">🌊</span> Wave
+      </a>
+      <a href="/paiements/retour/?transaction_id={{ transaction.reference }}&method=carte" class="btn btn-lg" style="background:var(--gray-800);color:white;justify-content:flex-start;">
+        <span style="font-size:1.25rem;">💳</span> Carte bancaire
+      </a>
+    </div>
+    <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--gray-100);">
+      <div style="display:flex;align-items:center;gap:0.5rem;font-size:0.75rem;color:var(--gray-400);">
+        🔒 Paiement sécurisé via CinetPay — vos données bancaires sont protégées
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

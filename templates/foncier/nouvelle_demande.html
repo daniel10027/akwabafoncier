@@ -1,0 +1,39 @@
+{% extends 'base_dashboard.html' %}
+{% block title %}Nouvelle demande{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1 class="page-title">📝 Nouvelle demande administrative</h1>
+  <a href="/dashboard/demandes/" class="btn btn-ghost">← Retour</a>
+</div>
+<div style="max-width:640px;">
+  <div class="card">
+    <form method="post">
+      {% csrf_token %}
+      <div class="form-group">
+        <label class="form-label">Type de demande *</label>
+        <select name="type_demande" class="form-control" required>
+          <option value="">Sélectionner...</option>
+          {% for val, label in type_choices %}
+          <option value="{{ val }}" {% if request.GET.type == val %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Terrain concerné *</label>
+        <select name="terrain" class="form-control" required>
+          <option value="">Sélectionner un terrain...</option>
+          {% for t in terrains %}
+          <option value="{{ t.pk }}" {% if request.GET.terrain == t.pk|stringformat:'s' %}selected{% endif %}>{{ t.reference_cadastrale }} — {{ t.commune.nom }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description de votre demande *</label>
+        <textarea name="description" class="form-control" rows="6" placeholder="Décrivez votre demande en détail..." required></textarea>
+      </div>
+      <div class="alert alert-info">ℹ️ Des frais de service s'appliquent selon le type de demande. Vous serez redirigé vers le paiement après soumission.</div>
+      <button type="submit" class="btn btn-primary w-full">📤 Soumettre la demande</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

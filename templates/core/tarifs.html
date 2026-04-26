@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Tarifs{% endblock %}
+{% block content %}
+<div style="max-width:1100px;margin:0 auto;padding:4rem 2rem;">
+  <div style="text-align:center;margin-bottom:3rem;"><h1 style="font-size:2rem;font-weight:800;">Tarifs transparents</h1><p style="color:var(--gray-500);margin-top:0.5rem;">Payer seulement ce dont vous avez besoin.</p></div>
+  {% if tarifs %}
+  <div class="grid-3" style="gap:1.5rem;">
+    {% for t in tarifs %}
+    <div class="card" style="text-align:center;">
+      <div style="font-weight:700;margin-bottom:0.5rem;">{{ t.get_service_display }}</div>
+      <div style="font-family:var(--font-heading);font-size:1.75rem;font-weight:800;color:var(--orange);margin-bottom:0.5rem;">{{ t.prix|floatformat:0 }} <span style="font-size:0.875rem;color:var(--gray-500);font-weight:400;">FCFA</span></div>
+      <p style="font-size:0.875rem;color:var(--gray-500);margin-bottom:1.25rem;">{{ t.description }}</p>
+      <a href="/auth/register/" class="btn btn-primary btn-sm w-full">Commencer</a>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state"><div class="empty-icon">💳</div><div class="empty-title">Tarifs en cours de configuration</div></div>
+  {% endif %}
+</div>
+{% endblock %}
