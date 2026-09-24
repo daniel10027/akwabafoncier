@@ -1,4 +1,5 @@
 {% extends 'base_dashboard.html' %}
+{% load foncier_extras %}
 {% block title %}{{ terrain.reference_cadastrale }}{% endblock %}
 {% block extra_head %}<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>{% endblock %}
 {% block content %}
@@ -30,7 +31,7 @@
       <div style="display:flex;justify-content:space-between;padding:0.625rem;background:var(--gray-50);border-radius:var(--radius-sm);"><span style="color:var(--gray-500);">Zone d'usage</span><span>{{ terrain.get_zone_usage_display }}</span></div>
       <div style="display:flex;justify-content:space-between;padding:0.625rem;background:var(--gray-50);border-radius:var(--radius-sm);"><span style="color:var(--gray-500);">Numéro de lot</span><span>{{ terrain.numero_lot|default:"—" }}</span></div>
       <div style="display:flex;justify-content:space-between;padding:0.625rem;background:var(--gray-50);border-radius:var(--radius-sm);"><span style="color:var(--gray-500);">Propriétaire officiel</span><span style="font-weight:600;">{% if terrain.proprietaire_actuel %}{{ terrain.proprietaire_actuel.get_full_name }}{% else %}Non renseigné{% endif %}</span></div>
-      <div style="display:flex;justify-content:space-between;padding:0.625rem;background:var(--gray-50);border-radius:var(--radius-sm);"><span style="color:var(--gray-500);">Valeur estimée</span><span>{% if terrain.valeur_estimee %}{{ terrain.valeur_estimee|floatformat:0 }} FCFA{% else %}—{% endif %}</span></div>
+      <div style="display:flex;justify-content:space-between;padding:0.625rem;background:var(--gray-50);border-radius:var(--radius-sm);"><span style="color:var(--gray-500);">Valeur estimée</span><span>{% if terrain.valeur_estimee %}{{ terrain.valeur_estimee|fcfa }} FCFA{% else %}—{% endif %}</span></div>
       <div style="padding:0.625rem;background:var(--gray-50);border-radius:var(--radius-sm);"><div style="color:var(--gray-500);margin-bottom:0.25rem;">Adresse</div><div>{{ terrain.adresse_complete|default:"—" }}</div></div>
     </div>
     <div class="divider"></div>
@@ -44,7 +45,7 @@
     <div class="card" style="margin-bottom:1rem;">
       <div class="card-header"><span class="card-title">📍 Localisation</span></div>
       <div id="detail-map" style="height:220px;border-radius:var(--radius);overflow:hidden;"></div>
-      <div style="font-size:0.8125rem;color:var(--gray-500);margin-top:0.625rem;">{{ terrain.latitude|floatformat:6 }}, {{ terrain.longitude|floatformat:6 }}</div>
+      <div style="font-size:0.8125rem;color:var(--gray-500);margin-top:0.625rem;">{% load l10n %}{% localize off %}{{ terrain.latitude|floatformat:6 }}, {{ terrain.longitude|floatformat:6 }}{% endlocalize %}</div>
     </div>
     <div class="card">
       <div class="card-header"><span class="card-title">📂 Documents ({{ documents|length }})</span></div>
@@ -123,13 +124,16 @@
 </div>
 {% endblock %}
 {% block extra_js %}
+{% load l10n %}
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
+{% localize off %}
 const m = L.map('detail-map').setView([{{ terrain.latitude }}, {{ terrain.longitude }}], 15);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(m);
 L.marker([{{ terrain.latitude }}, {{ terrain.longitude }}])
   .addTo(m)
   .bindPopup('<b>{{ terrain.reference_cadastrale }}</b><br>{{ terrain.get_statut_display }}')
   .openPopup();
+{% endlocalize %}
 </script>
 {% endblock %}

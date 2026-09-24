@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
+from django.conf import settings
 from foncier.models import Terrain, DemandeProcedure, Reclamation, Commune
 from utilisateurs.models import Utilisateur
 
@@ -34,3 +35,14 @@ def contact(request):
         messages.success(request, 'Message envoyé avec succès !')
         return redirect('contact')
     return render(request, 'core/contact.html')
+
+def service_worker(request):
+    """Serves the service worker at the origin root so its scope covers the whole app
+    (a SW registered from /static/js/sw.js would otherwise only control /static/js/)."""
+    path = settings.BASE_DIR / 'static' / 'js' / 'sw.js'
+    with open(path, 'r', encoding='utf-8') as f:
+        content = f.read()
+    response = HttpResponse(content, content_type='application/javascript')
+    response['Service-Worker-Allowed'] = '/'
+    response['Cache-Control'] = 'no-cache'
+    return response

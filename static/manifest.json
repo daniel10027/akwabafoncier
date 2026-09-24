@@ -1,0 +1,33 @@
+{
+  "name": "AkwabaFoncier",
+  "short_name": "AkwabaFoncier",
+  "description": "Plateforme nationale de transparence, de sécurisation et de gestion intelligente du foncier en Côte d'Ivoire.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#FDF8F1",
+  "theme_color": "#F77F00",
+  "lang": "fr",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "/static/img/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/static/img/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/static/img/icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

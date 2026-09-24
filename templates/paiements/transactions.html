@@ -1,4 +1,5 @@
 {% extends 'base_dashboard.html' %}
+{% load foncier_extras %}
 {% block title %}Mes paiements{% endblock %}
 {% block content %}
 <div class="page-header">
@@ -12,7 +13,7 @@
       <tr>
         <td><span style="font-family:monospace;font-size:0.8125rem;">{{ t.reference }}</span></td>
         <td>{{ t.service.get_service_display|default:"—" }}</td>
-        <td style="font-weight:600;">{{ t.montant|floatformat:0 }} FCFA</td>
+        <td style="font-weight:600;">{{ t.montant|fcfa }} FCFA</td>
         <td>{{ t.get_methode_paiement_display|default:"—" }}</td>
         <td style="font-size:0.8125rem;color:var(--gray-500);">{{ t.date_creation|date:"d/m/Y H:i" }}</td>
         <td><span class="badge badge-{% if t.statut == 'succes' %}success{% elif t.statut == 'echec' %}danger{% else %}warning{% endif %}">{{ t.get_statut_display }}</span></td>

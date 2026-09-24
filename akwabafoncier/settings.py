@@ -2,9 +2,9 @@ import os
 from pathlib import Path
 
 """
-AkwabaFoncier — settings_production.py
-Pour utiliser en production : 
-  export DJANGO_SETTINGS_MODULE=akwabafoncier.settings_production
+AkwabaFoncier — settings.py
+Configuration par defaut (dev/local/Docker). Toutes les valeurs sensibles
+viennent de l'environnement (.env). Pour la production, voir settings_production.py.
 """
 
 from decouple import config

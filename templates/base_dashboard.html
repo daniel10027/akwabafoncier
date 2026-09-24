@@ -6,12 +6,23 @@
   <title>{% block title %}Dashboard{% endblock %} — AkwabaFoncier</title>
   <link rel="stylesheet" href="/static/css/akwaba.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏛️</text></svg>">
+
+  <!-- PWA -->
+  <link rel="manifest" href="/static/manifest.json">
+  <meta name="theme-color" content="#F77F00">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="AkwabaFoncier">
+  <link rel="apple-touch-icon" href="/static/img/apple-touch-icon.png">
+
   {% block extra_head %}{% endblock %}
 </head>
 <body>
 
 <!-- NAVBAR -->
 <nav class="navbar">
+  <button type="button" class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Ouvrir le menu">☰</button>
   <a href="/" class="navbar-brand">
     <div class="navbar-flag">
       <span class="flag-o"></span>
@@ -21,11 +32,28 @@
     AkwabaFoncier
   </a>
 
-  <div style="display:flex;align-items:center;gap:1.5rem;">
+  <div class="navbar-quicklinks">
     <a href="/cartographie/" class="btn btn-ghost btn-sm">🗺️ Carte</a>
     {% if user.role in 'admin_operationnel,super_admin' %}
       <a href="/dashboard/admin-panel/" class="btn btn-outline btn-sm">⚙️ Admin</a>
     {% endif %}
+  </div>
+
+  <!-- Notifications (always visible, even on mobile) -->
+  <div style="position:relative;flex-shrink:0;">
+    <button onclick="toggleNotifs(this)" id="notif-btn" style="background:var(--gray-100);border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;position:relative;">
+      🔔
+      <span id="notif-badge" style="display:none;position:absolute;top:2px;right:2px;width:8px;height:8px;background:var(--red);border-radius:50%;"></span>
+    </button>
+    <div id="notif-dropdown" style="display:none;position:absolute;top:44px;right:0;background:white;border-radius:var(--radius);box-shadow:var(--shadow-lg);width:300px;max-width:calc(100vw - 2rem);z-index:9999;border:1px solid var(--gray-100);">
+      <div style="padding:0.875rem 1rem;border-bottom:1px solid var(--gray-100);font-weight:600;font-size:0.875rem;">🔔 Notifications</div>
+      <div id="notif-list" style="max-height:280px;overflow-y:auto;">
+        <div style="text-align:center;padding:2rem;color:var(--gray-400);font-size:0.875rem;">Aucune notification</div>
+      </div>
+      <div style="padding:0.75rem;border-top:1px solid var(--gray-100);">
+        <a href="/dashboard/demandes/" style="font-size:0.8125rem;color:var(--orange);font-weight:600;">Voir mes demandes →</a>
+      </div>
+    </div>
   </div>
 
   <div class="navbar-actions">
@@ -36,22 +64,6 @@
       <div>
         <div style="font-size:0.8125rem;font-weight:600;color:var(--gray-800);">{{ user.get_full_name|default:user.username }}</div>
         <div style="font-size:0.6875rem;color:var(--gray-500);">{{ user.get_role_display }}</div>
-      </div>
-    </div>
-    <!-- Notifications -->
-    <div style="position:relative;">
-      <button onclick="toggleNotifs(this)" id="notif-btn" style="background:var(--gray-100);border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;position:relative;">
-        🔔
-        <span id="notif-badge" style="display:none;position:absolute;top:2px;right:2px;width:8px;height:8px;background:var(--red);border-radius:50%;"></span>
-      </button>
-      <div id="notif-dropdown" style="display:none;position:absolute;top:44px;right:0;background:white;border-radius:var(--radius);box-shadow:var(--shadow-lg);width:300px;z-index:9999;border:1px solid var(--gray-100);">
-        <div style="padding:0.875rem 1rem;border-bottom:1px solid var(--gray-100);font-weight:600;font-size:0.875rem;">🔔 Notifications</div>
-        <div id="notif-list" style="max-height:280px;overflow-y:auto;">
-          <div style="text-align:center;padding:2rem;color:var(--gray-400);font-size:0.875rem;">Aucune notification</div>
-        </div>
-        <div style="padding:0.75rem;border-top:1px solid var(--gray-100);">
-          <a href="/dashboard/demandes/" style="font-size:0.8125rem;color:var(--orange);font-weight:600;">Voir mes demandes →</a>
-        </div>
       </div>
     </div>
     <a href="/auth/profil/" class="btn btn-ghost btn-sm">Mon profil</a>
@@ -116,6 +128,14 @@
         <span class="icon">⚙️</span> Admin Django
       </a>
 
+      <span class="sidebar-section-label">Compte</span>
+      <a href="/auth/profil/" class="sidebar-link {% if 'profil' in request.path %}active{% endif %}">
+        <span class="icon">👤</span> Mon profil
+      </a>
+      <a href="/auth/logout/" class="sidebar-link" style="color:var(--red);">
+        <span class="icon">🚪</span> Déconnexion
+      </a>
+
     {% else %}
       <!-- CITOYEN / PRO SIDEBAR -->
       <span class="sidebar-section-label">Mon espace</span>
@@ -158,8 +178,14 @@
       <a href="/paiements/abonnement/" class="sidebar-link">
         <span class="icon">⭐</span> Passer Pro
       </a>
+
+      <span class="sidebar-section-label">Compte</span>
+      <a href="/auth/logout/" class="sidebar-link" style="color:var(--red);">
+        <span class="icon">🚪</span> Déconnexion
+      </a>
     {% endif %}
   </aside>
+  <div class="sidebar-backdrop" onclick="closeSidebar()"></div>
 
   <!-- MAIN CONTENT -->
   <main class="main-content">

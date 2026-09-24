@@ -1,4 +1,5 @@
 {% extends 'base_dashboard.html' %}
+{% load foncier_extras %}
 {% block title %}Rapport — {{ terrain.reference_cadastrale }}{% endblock %}
 
 {% block extra_head %}
@@ -194,7 +195,7 @@
         </div>
         <div class="rapport-field">
           <div class="rapport-field-label">Valeur estimée</div>
-          <div class="rapport-field-value">{% if terrain.valeur_estimee %}{{ terrain.valeur_estimee|floatformat:0 }} FCFA{% else %}Non renseignée{% endif %}</div>
+          <div class="rapport-field-value">{% if terrain.valeur_estimee %}{{ terrain.valeur_estimee|fcfa }} FCFA{% else %}Non renseignée{% endif %}</div>
         </div>
       </div>
     </div>

@@ -129,10 +129,16 @@
   display: flex;
   align-items: center;
   gap: 0.625rem;
+  max-width: 210px;
+  pointer-events: none;
 }
 
-.hero-floating.left { left: 5%; top: 30%; animation: float 6s ease-in-out infinite; }
-.hero-floating.right { right: 5%; top: 40%; animation: float 6s ease-in-out infinite 3s; }
+.hero-floating.left { left: 3%; top: 10%; animation: float 6s ease-in-out infinite; }
+.hero-floating.right { right: 3%; top: 12%; animation: float 6s ease-in-out infinite 3s; }
+
+@media (max-width: 1150px) {
+  .hero-floating { display: none; }
+}
 
 @keyframes float {
   0%, 100% { transform: translateY(0); }

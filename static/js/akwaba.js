@@ -1,5 +1,12 @@
 // AkwabaFoncier — Main JS
 
+// Register the PWA service worker (app shell caching for offline resilience)
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  });
+}
+
 document.addEventListener('DOMContentLoaded', function () {
 
   // Auto-dismiss alerts after 5s
@@ -16,6 +23,14 @@ document.addEventListener('DOMContentLoaded', function () {
   const path = window.location.pathname;
   document.querySelectorAll('.navbar-nav a').forEach(a => {
     if (a.getAttribute('href') === path) a.classList.add('active');
+  });
+
+  // Close mobile sidebar/nav when a link inside is clicked
+  document.querySelectorAll('.sidebar a').forEach(a => {
+    a.addEventListener('click', () => { if (typeof closeSidebar === 'function') closeSidebar(); });
+  });
+  document.querySelectorAll('.navbar-nav a, .navbar-actions a').forEach(a => {
+    a.addEventListener('click', () => document.querySelector('.navbar')?.classList.remove('nav-open'));
   });
 
   // Number formatting for stats
@@ -63,7 +78,21 @@ function copyToClipboard(text, btn) {
 // Mobile sidebar toggle
 function toggleSidebar() {
   const sidebar = document.querySelector('.sidebar');
+  const backdrop = document.querySelector('.sidebar-backdrop');
   if (sidebar) sidebar.classList.toggle('open');
+  if (backdrop) backdrop.classList.toggle('open');
+}
+function closeSidebar() {
+  const sidebar = document.querySelector('.sidebar');
+  const backdrop = document.querySelector('.sidebar-backdrop');
+  if (sidebar) sidebar.classList.remove('open');
+  if (backdrop) backdrop.classList.remove('open');
+}
+
+// Mobile top navbar toggle (public pages)
+function toggleNavbarNav() {
+  const navbar = document.querySelector('.navbar');
+  if (navbar) navbar.classList.toggle('nav-open');
 }
 
 // Form validation

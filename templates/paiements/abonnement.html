@@ -1,4 +1,5 @@
 {% extends 'base_dashboard.html' %}
+{% load foncier_extras %}
 {% block title %}Abonnement Pro{% endblock %}
 {% block content %}
 <div class="page-header"><h1 class="page-title">⭐ Abonnement AkwabaFoncier Pro</h1></div>
@@ -15,7 +16,7 @@
   <div class="card" style="text-align:center;{% if 'annuel' in t.service %}border:2px solid var(--orange);{% endif %}">
     {% if 'annuel' in t.service %}<div style="background:var(--orange);color:white;padding:0.25rem 1rem;border-radius:100px;font-size:0.75rem;font-weight:700;margin:-1.5rem auto 1rem;width:fit-content;">Meilleure offre</div>{% endif %}
     <div style="font-weight:700;color:var(--gray-500);font-size:0.8125rem;text-transform:uppercase;margin-bottom:0.5rem;">{{ t.get_service_display }}</div>
-    <div style="font-family:var(--font-heading);font-size:2rem;font-weight:800;margin-bottom:0.25rem;">{{ t.prix|floatformat:0 }} <span style="font-size:0.875rem;font-weight:400;color:var(--gray-500);">FCFA</span></div>
+    <div style="font-family:var(--font-heading);font-size:2rem;font-weight:800;margin-bottom:0.25rem;">{{ t.prix|fcfa }} <span style="font-size:0.875rem;font-weight:400;color:var(--gray-500);">FCFA</span></div>
     <p style="font-size:0.875rem;color:var(--gray-500);margin-bottom:1.5rem;">{{ t.description }}</p>
     <a href="/paiements/payer/?service={{ t.service }}" class="btn {% if 'annuel' in t.service %}btn-primary{% else %}btn-outline{% endif %} w-full">Choisir ce plan</a>
   </div>

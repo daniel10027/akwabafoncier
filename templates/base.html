@@ -6,6 +6,16 @@
   <title>{% block title %}AkwabaFoncier{% endblock %} — Plateforme Foncière Nationale</title>
   <link rel="stylesheet" href="/static/css/akwaba.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏛️</text></svg>">
+
+  <!-- PWA -->
+  <link rel="manifest" href="/static/manifest.json">
+  <meta name="theme-color" content="#F77F00">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="AkwabaFoncier">
+  <link rel="apple-touch-icon" href="/static/img/apple-touch-icon.png">
+
   {% block extra_head %}{% endblock %}
 </head>
 <body>
@@ -46,6 +56,8 @@
       <a href="/auth/register/" class="btn btn-primary btn-sm">Créer un compte</a>
     {% endif %}
   </div>
+
+  <button type="button" class="navbar-toggle" onclick="toggleNavbarNav()" aria-label="Ouvrir le menu">☰</button>
 </nav>
 
 <!-- MESSAGES -->

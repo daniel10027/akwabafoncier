@@ -136,7 +136,8 @@ function makeChart(id, type, labels, data, opts={}) {
       maintainAspectRatio: false,
       plugins: {
         legend: {
-          position: type === 'doughnut' ? 'right' : 'top',
+          display: type === 'doughnut',
+          position: 'right',
           labels: { font: { size: 12, family: 'DM Sans' }, padding: 12, boxWidth: 12 }
         },
         tooltip: { callbacks: { label: (ctx) => ` ${ctx.label}: ${ctx.parsed}` } }

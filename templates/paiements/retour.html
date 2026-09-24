@@ -1,4 +1,5 @@
 {% extends 'base_dashboard.html' %}
+{% load foncier_extras %}
 {% block title %}Paiement confirmé{% endblock %}
 {% block content %}
 <div style="max-width:500px;margin:3rem auto;text-align:center;">
@@ -9,7 +10,7 @@
     {% if transaction %}
     <div style="background:var(--gray-50);border-radius:var(--radius);padding:1rem;margin-bottom:1.5rem;text-align:left;">
       <div style="font-size:0.8125rem;display:flex;justify-content:space-between;margin-bottom:0.375rem;"><span style="color:var(--gray-500);">Référence</span><span style="font-weight:600;font-family:monospace;">{{ transaction.reference }}</span></div>
-      <div style="font-size:0.8125rem;display:flex;justify-content:space-between;margin-bottom:0.375rem;"><span style="color:var(--gray-500);">Montant</span><span style="font-weight:600;">{{ transaction.montant|floatformat:0 }} FCFA</span></div>
+      <div style="font-size:0.8125rem;display:flex;justify-content:space-between;margin-bottom:0.375rem;"><span style="color:var(--gray-500);">Montant</span><span style="font-weight:600;">{{ transaction.montant|fcfa }} FCFA</span></div>
       <div style="font-size:0.8125rem;display:flex;justify-content:space-between;"><span style="color:var(--gray-500);">Service</span><span>{{ transaction.service.get_service_display }}</span></div>
     </div>
     {% endif %}

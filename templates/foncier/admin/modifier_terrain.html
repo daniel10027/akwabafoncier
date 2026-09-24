@@ -1,7 +1,9 @@
 {% extends 'base_dashboard.html' %}
 {% block title %}Modifier terrain{% endblock %}
 {% block extra_head %}<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>{% endblock %}
+{% load l10n %}
 {% block content %}
+{% localize off %}
 <div class="page-header">
   <div>
     <h1 class="page-title">✏️ Modifier — {{ terrain.reference_cadastrale }}</h1>
@@ -86,10 +88,12 @@
     </div>
   </div>
 </div>
+{% endlocalize %}
 {% endblock %}
 {% block extra_js %}
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
+{% localize off %}
 const lat0 = {{ terrain.latitude }}, lng0 = {{ terrain.longitude }};
 const pickerMap = L.map('picker-map').setView([lat0, lng0], 14);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(pickerMap);
@@ -100,5 +104,6 @@ pickerMap.on('click', function(e) {
   document.getElementById('lng-input').value = lng.toFixed(6);
   marker.setLatLng([lat, lng]);
 });
+{% endlocalize %}
 </script>
 {% endblock %}
